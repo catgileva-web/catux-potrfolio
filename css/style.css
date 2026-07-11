@@ -153,6 +153,7 @@
   .about__p{font-size:13px; color:var(--text-secondary); line-height:1.6;}
   .about__p + .about__p{margin-top:12px;}
   .milestones{width:150px; flex-shrink:0; border-left:0.5px solid var(--border); padding-left:16px;}
+  .milestones .display-frame{margin-bottom:14px;}
   .milestones__head{font-family:var(--font-mono); font-size:9px; color:var(--text-muted); letter-spacing:1px; margin-bottom:10px;}
   .milestone{margin-bottom:10px;}
   .milestone__top{display:flex; align-items:center; gap:7px;}
