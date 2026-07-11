@@ -85,6 +85,9 @@
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; position:relative; overflow:hidden;}
   .display-frame__fallback:first-child{font-family:var(--font-mono); font-size:10px; color:var(--accent-warm); letter-spacing:1px;}
   .display-frame__fallback:last-child{font-family:var(--font-mono); font-size:9px; color:#888780;}
+  /* иллюстрация «перевод» в SEC A — строка декодируется из шума в фразу, см. index.html */
+  .translate-line{font-family:var(--font-mono); font-size:8px; line-height:1.5; color:var(--accent-warm);
+    text-align:center; letter-spacing:0.5px; padding:0 12px;}
   /* ASCII-портрет: заполняется из настоящего фото (см. initAsciiPortrait в js/script.js);
      пока оригинала нет — .has-photo не добавляется, показана текстовая заглушка выше. */
   .ascii-portrait{display:none; margin:0; font-family:var(--font-mono); font-size:5px; line-height:5px;
