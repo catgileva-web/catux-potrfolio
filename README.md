@@ -20,8 +20,13 @@ CONTEXT.md           — бриф проекта: стиль, тон, догов
 
 ## Деплой
 
-GitHub Pages: Settings → Pages → Source: `main` branch, папка `/root`.
-Сайт появится на `https://<username>.github.io/<repo-name>/`.
+Автодеплой на GitHub Pages через Actions: `.github/workflows/pages.yml`
+собирает и публикует сайт при каждом пуше в `main`.
+
+Разово нужно включить источник в самом репозитории: Settings → Pages →
+Source: **GitHub Actions** (вместо ветки). После этого сайт появится на
+`https://<username>.github.io/<repo-name>/` и будет обновляться
+автоматически с каждым мёржем в `main`.
 
 ## Контекст для Claude
 
