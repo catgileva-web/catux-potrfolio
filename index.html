@@ -35,12 +35,18 @@
         <p class="intro__desc">Семь лет проектирую интерфейсы для сложного профессионального софта — от инструментов для переводчиков до систем кибербезопасности. Отношусь к дизайну как к переводу: с языка пользователя на язык системы.</p>
       </div>
       <div class="display-frame">
-        <!-- Иллюстрация «перевод»: приём декодирования (см. initDecodeEffect
-             в js/script.js) применён к самостоятельной строке — машинный шум
-             складывается в человеческую фразу. Срабатывает один раз при
-             въезде SEC A в вид, как и остальные decode-элементы группы «a». -->
+        <!-- Иллюстрация «схема сигнала» (см. initSignalDiagram в js/script.js):
+             запрос → анализ → решение, точка проходит по линии один раз при
+             въезде SEC A в вид, зажигая узлы по очереди — машина обрабатывает
+             сигнал. Другая техника, чем decode-текст, чтобы не повторяться. -->
         <div class="display-frame__screen">
-          <div class="translate-line" data-decode-group="a">С ЯЗЫКА СИСТЕМЫ — НА ЯЗЫК ПОЛЬЗОВАТЕЛЯ</div>
+          <div class="signal-diagram" id="signal-diagram" role="img" aria-label="Схема: запрос превращается в анализ, затем в решение">
+            <div class="signal-track"></div>
+            <div class="signal-pulse" id="signal-pulse" aria-hidden="true"></div>
+            <div class="signal-node" style="left:18px"><span class="signal-node__dot"></span><span class="signal-node__label">ЗАПРОС</span></div>
+            <div class="signal-node" style="left:75px"><span class="signal-node__dot"></span><span class="signal-node__label">АНАЛИЗ</span></div>
+            <div class="signal-node" style="left:132px"><span class="signal-node__dot"></span><span class="signal-node__label">РЕШЕНИЕ</span></div>
+          </div>
         </div>
         <div class="display-frame__label">ДИСПЛЕЙ</div>
       </div>

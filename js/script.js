@@ -67,7 +67,7 @@
     });
   }
 
-  /* — приём 2: ASCII-портрет в дисплее SEC A — ждёт настоящее фото — */
+  /* — приём 2: ASCII-портрет в дисплее SEC C (над «ВЕХИ») — ждёт настоящее фото — */
   function toAsciiLines(cells, cols, rows){
     var lines = [];
     for(var r=0; r<rows; r++){ lines.push(cells.slice(r*cols, (r+1)*cols).join('')); }
@@ -137,6 +137,38 @@
         observer.unobserve(entry.target);
       });
     }, {threshold:0.3});
+    observer.observe(sectionEl);
+  }
+
+  /* — приём (новый): схема сигнала в дисплее SEC A — запрос → анализ → решение — */
+  function initSignalDiagram(){
+    var root = document.getElementById('signal-diagram');
+    var pulse = document.getElementById('signal-pulse');
+    var sectionEl = document.getElementById('sec-a');
+    if(!root || !pulse || !sectionEl) return;
+    var nodes = root.querySelectorAll('.signal-node');
+
+    function lightAll(){
+      for(var i=0; i<nodes.length; i++){ nodes[i].classList.add('is-lit'); }
+    }
+
+    if(prefersReducedMotion()){ lightAll(); return; } /* сразу финальное состояние, без «пробегающей» точки */
+
+    function play(){
+      pulse.classList.add('is-active');
+      var delays = [0, 460, 900]; /* совпадает с моментом, когда точка проходит каждый узел */
+      for(var i=0; i<nodes.length; i++){
+        (function(node, delay){ setTimeout(function(){ node.classList.add('is-lit'); }, delay); })(nodes[i], delays[i]);
+      }
+    }
+
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(!entry.isIntersecting) return;
+        play();
+        observer.unobserve(entry.target);
+      });
+    }, {threshold:0.4});
     observer.observe(sectionEl);
   }
 
@@ -369,4 +401,5 @@
 
   initDecodeEffect();
   initAsciiPortrait();
+  initSignalDiagram();
 })();
