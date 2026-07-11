@@ -119,11 +119,25 @@
   function initAsciiPortrait(){
     var screen = document.getElementById('portrait-screen');
     var pre = document.getElementById('ascii-portrait');
-    if(!screen || !pre) return;
-    var img = new Image();
-    img.onload = function(){ renderAsciiPortrait(img, screen, pre); };
-    img.onerror = function(){ /* оригинала портрета ещё нет — оставляем текстовую заглушку */ };
-    img.src = 'assets/images/portrait.jpg'; /* TODO: заменить на оригинал портрета */
+    var sectionEl = document.getElementById('sec-c');
+    if(!screen || !pre || !sectionEl) return;
+
+    function load(){
+      var img = new Image();
+      img.onload = function(){ renderAsciiPortrait(img, screen, pre); };
+      img.onerror = function(){ /* оригинала портрета ещё нет — оставляем текстовую заглушку */ };
+      img.src = 'assets/images/portrait.jpg'; /* TODO: заменить на оригинал портрета */
+    }
+
+    /* портрет живёт в SEC C — рендерим один раз, когда секция въезжает в вид */
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(!entry.isIntersecting) return;
+        load();
+        observer.unobserve(entry.target);
+      });
+    }, {threshold:0.3});
+    observer.observe(sectionEl);
   }
 
   /* — годовая шкала — */
