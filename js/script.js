@@ -140,36 +140,72 @@
     observer.observe(sectionEl);
   }
 
-  /* — приём (новый): схема сигнала в дисплее SEC A — запрос → анализ → решение — */
-  function initSignalDiagram(){
-    var root = document.getElementById('signal-diagram');
-    var pulse = document.getElementById('signal-pulse');
-    var sectionEl = document.getElementById('sec-a');
-    if(!root || !pulse || !sectionEl) return;
-    var nodes = root.querySelectorAll('.signal-node');
+  /* — приём (новый, 11.07): «имя-чертёж» — плоттер вычерчивает имя в SEC A —
+     Каретка-перекрестие проходит по строкам имени, буквы проявляются за ней
+     (clip-path ведётся из rAF), координаты X/Y в шапке секции тикают вслед.
+     Старт — после загрузки шрифта (document.fonts.ready), чтобы метрики строк
+     были финальными и каретка не расходилась с буквами. */
+  function initPlotter(){
+    var plotter = document.getElementById('plotter');
+    var cross = document.getElementById('plotter-crosshair');
+    var coords = document.getElementById('plotter-coords');
+    if(!plotter || !cross || !coords) return;
+    var lines = plotter.querySelectorAll('.plot-line');
+    if(!lines.length) return;
 
-    function lightAll(){
-      for(var i=0; i<nodes.length; i++){ nodes[i].classList.add('is-lit'); }
+    function pad(n){ n = Math.max(0, Math.round(n)); return ('0000'+n).slice(-4); }
+    function setCoords(x, y){ coords.textContent = 'X:'+pad(x)+' Y:'+pad(y); }
+    function lineMetrics(el){
+      var box = el.getBoundingClientRect(), base = plotter.getBoundingClientRect();
+      return { left: box.left - base.left, midY: box.top - base.top + box.height*0.55, width: box.width };
     }
 
-    if(prefersReducedMotion()){ lightAll(); return; } /* сразу финальное состояние, без «пробегающей» точки */
+    if(prefersReducedMotion()){
+      /* имя видно сразу, каретки нет — координаты застывают в конечной точке */
+      var last = lines[lines.length-1];
+      var setFinal = function(){ var m = lineMetrics(last); setCoords(m.left + m.width, m.midY); };
+      if(document.fonts && document.fonts.ready){ document.fonts.ready.then(setFinal); } else { setFinal(); }
+      return;
+    }
 
-    function play(){
-      pulse.classList.add('is-active');
-      var delays = [0, 460, 900]; /* совпадает с моментом, когда точка проходит каждый узел */
-      for(var i=0; i<nodes.length; i++){
-        (function(node, delay){ setTimeout(function(){ node.classList.add('is-lit'); }, delay); })(nodes[i], delays[i]);
+    plotter.classList.add('is-armed'); /* строки спрятаны clip-path'ом до старта */
+
+    function plotLine(el, duration, done){
+      var m = lineMetrics(el);
+      var start = null;
+      function frame(ts){
+        if(!start){ start = ts; }
+        var p = Math.min((ts - start)/duration, 1);
+        var e = p < 0.5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2)/2; /* easeInOutQuad */
+        el.style.clipPath = 'inset(-10% ' + ((1 - e)*100) + '% -10% 0)';
+        var x = m.left + e*m.width;
+        cross.style.transform = 'translate(' + x + 'px,' + m.midY + 'px)';
+        setCoords(x, m.midY);
+        if(p < 1){ requestAnimationFrame(frame); } else { done(); }
       }
+      requestAnimationFrame(frame);
     }
 
-    var observer = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if(!entry.isIntersecting) return;
-        play();
-        observer.unobserve(entry.target);
-      });
-    }, {threshold:0.4});
-    observer.observe(sectionEl);
+    function start(){
+      plotter.classList.add('is-plotting'); /* каретка видима только во время отрисовки */
+      var i = 0;
+      function next(){
+        if(i >= lines.length){ plotter.classList.remove('is-plotting'); return; }
+        var el = lines[i];
+        i++;
+        plotLine(el, i === 1 ? 800 : 650, next);
+      }
+      next();
+    }
+
+    var kicked = false;
+    function kick(){ if(kicked) return; kicked = true; setTimeout(start, 250); }
+    if(document.fonts && document.fonts.ready){
+      document.fonts.ready.then(kick);
+      setTimeout(kick, 1600); /* страховка: не ждать шрифт дольше 1.6 с */
+    } else {
+      kick();
+    }
   }
 
   /* — годовая шкала — */
@@ -401,5 +437,5 @@
 
   initDecodeEffect();
   initAsciiPortrait();
-  initSignalDiagram();
+  initPlotter();
 })();

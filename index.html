@@ -25,32 +25,24 @@
 
   <!-- ============ SEC A · ИНТРО ============ -->
   <section class="intro" id="sec-a">
-    <div class="eyebrow eyebrow--accent" data-decode-group="a">SEC A · ИНТРО</div>
-    <div class="intro__row">
-      <div class="intro__col">
-        <h1 class="intro__name">Катерина Гилёва</h1>
-        <div class="intro__latin" data-decode-group="a">EKATERINA GILEVA</div>
-        <div class="role-badge"><span>СТАРШИЙ ДИЗАЙНЕР ЦИФРОВЫХ ПРОДУКТОВ</span></div>
-        <p class="intro__lead">Лингвист, ставший продуктовым дизайнером.</p>
-        <p class="intro__desc">Семь лет проектирую интерфейсы для сложного профессионального софта — от инструментов для переводчиков до систем кибербезопасности. Отношусь к дизайну как к переводу: с языка пользователя на язык системы.</p>
-      </div>
-      <div class="display-frame">
-        <!-- Иллюстрация «схема сигнала» (см. initSignalDiagram в js/script.js):
-             запрос → анализ → решение, точка проходит по линии один раз при
-             въезде SEC A в вид, зажигая узлы по очереди — машина обрабатывает
-             сигнал. Другая техника, чем decode-текст, чтобы не повторяться. -->
-        <div class="display-frame__screen">
-          <div class="signal-diagram" id="signal-diagram" role="img" aria-label="Схема: запрос превращается в анализ, затем в решение">
-            <div class="signal-track"></div>
-            <div class="signal-pulse" id="signal-pulse" aria-hidden="true"></div>
-            <div class="signal-node" style="left:18px"><span class="signal-node__dot"></span><span class="signal-node__label">ЗАПРОС</span></div>
-            <div class="signal-node" style="left:75px"><span class="signal-node__dot"></span><span class="signal-node__label">АНАЛИЗ</span></div>
-            <div class="signal-node" style="left:132px"><span class="signal-node__dot"></span><span class="signal-node__label">РЕШЕНИЕ</span></div>
-          </div>
-        </div>
-        <div class="display-frame__label">ДИСПЛЕЙ</div>
-      </div>
+    <div class="intro__head">
+      <div class="eyebrow eyebrow--accent" style="margin-bottom:0;" data-decode-group="a">SEC A · ИНТРО</div>
+      <div class="plotter-coords" id="plotter-coords" aria-hidden="true">X:0000 Y:0000</div>
     </div>
+    <!-- «Имя-чертёж»: машина вычерчивает имя как плоттер (см. initPlotter в
+         js/script.js) — перекрестие-каретка проходит по строкам, буквы
+         проявляются за ним, координаты в шапке тикают. Один раз при загрузке;
+         prefers-reduced-motion сразу получает финальное состояние. -->
+    <div class="plotter" id="plotter">
+      <span class="plotter__reg plotter__reg--tl" aria-hidden="true"></span>
+      <span class="plotter__reg plotter__reg--br" aria-hidden="true"></span>
+      <h1 class="intro__name"><span class="plot-line">Катерина</span> <span class="plot-line">Гилёва</span></h1>
+      <div class="plotter__crosshair" id="plotter-crosshair" aria-hidden="true"></div>
+    </div>
+    <div class="intro__latin" data-decode-group="a">EKATERINA GILEVA</div>
+    <div class="role-badge"><span>СТАРШИЙ ДИЗАЙНЕР ЦИФРОВЫХ ПРОДУКТОВ</span></div>
+    <p class="intro__lead">Лингвист, ставший продуктовым дизайнером.</p>
+    <p class="intro__desc">Семь лет проектирую интерфейсы для сложного профессионального софта — от инструментов для переводчиков до систем кибербезопасности. Отношусь к дизайну как к переводу: с языка пользователя на язык системы.</p>
   </section>
 
   <!-- ============ SEC B · ОПЫТ И ПРОЕКТЫ ============ -->
