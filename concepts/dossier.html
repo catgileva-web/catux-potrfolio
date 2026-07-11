@@ -1,0 +1,311 @@
+<meta charset="UTF-8">
+<title>Концепт 2 · Досье аудитора — catux</title>
+<!-- ============================================================
+  КОНЦЕПТ-МАКЕТ 2 · «ДОСЬЕ UX-АУДИТОРА»
+  Альтернативная метафора главной страницы портфолио catux.
+  Не продакшен: отдельная страница для сравнения концепций.
+  Метафора: вся карьера Кэт — поиск скрытых проблем (Verifika ищет
+  ошибки перевода, Netwrix — угрозы, Индид — следит за доступом,
+  сама Кэт вскрывает UX-барьеры). Сайт = архив закрытых дел.
+============================================================ -->
+<style>
+  :root{
+    --paper:#edebe0;        /* бланк */
+    --sheet:#f4f2e8;        /* лист поверх стола */
+    --ink:#2b2a23;          /* машинопись */
+    --pre:#98957f;          /* предпечать бланка (лейблы, линейки) */
+    --rule:#c9c6b2;         /* линейки форм */
+    --stamp:#b03a26;        /* печать — терракота catux */
+    --stamp-soft:#b03a2618;
+    --dim:#6f6c5c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#22211b; --sheet:#2a2921; --ink:#e6e3d2; --pre:#807d69;
+      --rule:#45443a; --stamp:#d05a40; --stamp-soft:#d05a4022; --dim:#a3a08c;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#22211b; --sheet:#2a2921; --ink:#e6e3d2; --pre:#807d69;
+    --rule:#45443a; --stamp:#d05a40; --stamp-soft:#d05a4022; --dim:#a3a08c;
+  }
+  :root[data-theme="light"]{
+    --paper:#edebe0; --sheet:#f4f2e8; --ink:#2b2a23; --pre:#98957f;
+    --rule:#c9c6b2; --stamp:#b03a26; --stamp-soft:#b03a2618; --dim:#6f6c5c;
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,"Courier New",monospace;
+    font-size:14px; line-height:1.55;}
+  .file{max-width:760px; margin:28px auto 60px; background:var(--sheet);
+    border:1px solid var(--rule); box-shadow:0 1px 0 var(--rule);
+    padding:0 0 46px;}
+
+  /* предпечать бланка */
+  .pre-label{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:9.5px; letter-spacing:1.6px; text-transform:uppercase; color:var(--pre);}
+  .form-no{font-family:-apple-system,"Segoe UI",Roboto,sans-serif; font-size:9px;
+    letter-spacing:1px; color:var(--pre); text-transform:uppercase;}
+
+  /* шапка архива */
+  .arch-head{display:flex; justify-content:space-between; align-items:baseline;
+    padding:14px 34px 12px; border-bottom:1px solid var(--rule);}
+  .arch-head .form-no{text-align:right;}
+
+  /* титульный лист */
+  .title-sheet{position:relative; padding:34px 34px 30px; border-bottom:1px solid var(--rule);}
+  .case-no{font-size:12px; letter-spacing:2px; color:var(--dim); margin-bottom:22px;}
+  .subject-name{font-size:clamp(30px,6vw,46px); font-weight:700; letter-spacing:1px;
+    line-height:1.05; margin:6px 0 26px; text-transform:uppercase;}
+  .fields{display:grid; grid-template-columns:190px 1fr; row-gap:13px; column-gap:18px; max-width:520px;}
+  .fields .val{border-bottom:1px dotted var(--rule); padding-bottom:2px;}
+  .photo-slot{position:absolute; top:80px; right:34px; width:128px; height:158px;
+    border:1px dashed var(--pre); display:flex; align-items:center; justify-content:center;
+    text-align:center; padding:10px; transform:rotate(1.2deg);}
+  .photo-slot span{font-size:10px; letter-spacing:1.5px; color:var(--pre); line-height:1.8;}
+
+  /* печати */
+  .stamp{display:inline-block; border:2.5px solid var(--stamp); color:var(--stamp);
+    padding:7px 16px 6px; font-weight:700; letter-spacing:2.5px; font-size:13px;
+    text-transform:uppercase; transform:rotate(-5deg); background:var(--stamp-soft);
+    border-radius:3px; white-space:nowrap;}
+  .stamp--big{font-size:17px; padding:10px 22px 9px; letter-spacing:3px;}
+  .stamp--hero{position:absolute; top:262px; right:40px;}
+  .stamp--inline{font-size:10px; padding:4px 9px 3px; letter-spacing:1.5px;
+    border-width:2px; transform:rotate(-3deg);}
+  .stamp--open{border-style:dashed; opacity:.85;}
+  body.js .stamp{opacity:0; transform:rotate(-5deg) scale(1.7);}
+  body.js .stamp--inline{transform:rotate(-3deg) scale(1.7);}
+  body.js .stamp.is-stamped{opacity:1; transform:rotate(-5deg) scale(1);
+    transition:transform .22s cubic-bezier(.2,1.6,.35,1), opacity .12s linear;}
+  body.js .stamp--inline.is-stamped{transform:rotate(-3deg) scale(1);}
+  @media (prefers-reduced-motion:reduce){
+    body.js .stamp{opacity:1 !important; transform:rotate(-5deg) scale(1) !important; transition:none !important;}
+    body.js .stamp--inline{transform:rotate(-3deg) scale(1) !important;}
+  }
+
+  /* секции */
+  .sec{padding:26px 34px 6px;}
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:16px;}
+  .sec-head h2{font-size:13px; letter-spacing:2.5px; text-transform:uppercase; margin:0; font-weight:700;}
+  .sec-head .pre-label{flex:1; text-align:right;}
+
+  /* реестр юрисдикций */
+  table.registry{width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums;}
+  .registry th{text-align:left; font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
+    font-size:9px; letter-spacing:1.4px; text-transform:uppercase; color:var(--pre);
+    font-weight:600; padding:0 14px 7px 0; border-bottom:1px solid var(--ink);}
+  .registry td{padding:10px 14px 10px 0; border-bottom:1px solid var(--rule); vertical-align:top;}
+  .registry td:last-child{text-align:right; padding-right:0;}
+  .registry .co{font-weight:700;}
+
+  /* картотека дел */
+  .card{border:1px solid var(--rule); margin-bottom:14px; padding:16px 18px 14px;
+    position:relative; background:var(--sheet);}
+  .card__top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:8px;}
+  .card__no{font-size:11px; letter-spacing:2px; color:var(--dim);}
+  .card__subject{font-size:15.5px; font-weight:700; line-height:1.35; margin:2px 0 12px; max-width:30em;}
+  .card__rows{display:grid; grid-template-columns:118px 1fr; row-gap:7px; column-gap:14px; font-size:12.5px;}
+  .card__rows .v{color:var(--dim);}
+  .card__rows .v b{color:var(--ink); font-weight:700;}
+  .evidence{color:var(--stamp); font-weight:700; font-size:14px;}
+  .card__go{margin-top:12px; font-size:11px; letter-spacing:1.5px; color:var(--stamp);}
+  .card--flag{border-width:2px; border-color:var(--stamp);}
+  .grif{position:absolute; top:-9px; left:14px; background:var(--sheet); padding:0 8px;
+    font-size:9px; letter-spacing:2px; color:var(--stamp); font-weight:700;}
+
+  /* личное дело — анкета */
+  .quote{border-left:3px solid var(--stamp); padding:4px 0 4px 18px; margin:16px 0;
+    color:var(--dim); font-size:13px; max-width:56ch;}
+  .quote .who{display:block; margin-top:8px; font-size:10px; letter-spacing:1.5px; color:var(--pre); text-transform:uppercase;}
+
+  /* опись приложений */
+  .inventory{list-style:none; margin:0; padding:0; counter-reset:app;}
+  .inventory li{counter-increment:app; display:flex; gap:14px; padding:7px 0;
+    border-bottom:1px solid var(--rule); font-size:12.5px; align-items:baseline;}
+  .inventory li::before{content:"прил. " counter(app, decimal-leading-zero);
+    font-size:10px; letter-spacing:1px; color:var(--pre); min-width:64px;}
+  .inventory .yr{margin-left:auto; color:var(--pre); font-size:11px;}
+
+  /* контакты */
+  .contact-fields{display:grid; grid-template-columns:150px 1fr; row-gap:13px; column-gap:18px; max-width:430px;}
+  .contact-fields .val{border-bottom:1px dotted var(--rule); color:var(--stamp);}
+  .foot{display:flex; justify-content:space-between; align-items:flex-end;
+    padding:30px 34px 0; gap:20px;}
+  .foot .form-no{line-height:1.9;}
+
+  .note{padding:10px 34px 0; font-size:10px; color:var(--pre); letter-spacing:1px;}
+
+  @media (max-width:640px){
+    .file{margin:0; border-left:none; border-right:none;}
+    .photo-slot{position:static; transform:none; margin-top:20px; width:110px; height:136px;}
+    .stamp--hero{position:static; display:inline-block; margin-top:22px;}
+    .fields,.card__rows{grid-template-columns:1fr;} .fields .val{margin-top:-8px;}
+    .arch-head,.title-sheet,.sec,.foot,.note{padding-left:18px; padding-right:18px;}
+  }
+</style>
+
+<div class="file">
+
+  <div class="arch-head">
+    <span class="pre-label">Архив UX-аудита · фонд КГ · опись 1</span>
+    <span class="form-no">Форма № УХ-7<br>утв. 2019 г.</span>
+  </div>
+
+  <!-- ТИТУЛЬНЫЙ ЛИСТ -->
+  <section class="title-sheet">
+    <div class="case-no">ДЕЛО № КГ / 2019—2026 · ХРАНИТЬ ПОСТОЯННО</div>
+    <div class="pre-label">аудитор интерфейсов</div>
+    <h1 class="subject-name">Гилёва<br>Катерина</h1>
+    <div class="fields">
+      <span class="pre-label">Специализация</span><span class="val">сложный профессиональный софт</span>
+      <span class="pre-label">Юрисдикции</span><span class="val">локализация · кибербезопасность · привилегированный доступ</span>
+      <span class="pre-label">Метод</span><span class="val">перевод с языка систем на язык людей</span>
+      <span class="pre-label">Текущее производство</span><span class="val">Индид · старший дизайнер интерфейсов</span>
+    </div>
+    <div class="photo-slot"><span>ФОТО<br>К ДЕЛУ<br>НЕ ПРИОБЩЕНО</span></div>
+    <span class="stamp stamp--big stamp--hero">Дел закрыто: 9</span>
+  </section>
+
+  <!-- РЕЕСТР ЮРИСДИКЦИЙ -->
+  <section class="sec">
+    <div class="sec-head"><h2>Реестр юрисдикций</h2><span class="pre-label">лист 2</span></div>
+    <table class="registry">
+      <tr><th>Период</th><th>Юрисдикция</th><th>Орган</th><th>Должность</th><th>Дел</th></tr>
+      <tr><td>2019—2021</td><td>Локализация</td><td class="co">Palex-Soft</td><td>UX Designer</td><td>3</td></tr>
+      <tr><td>2021—2024</td><td>Кибербезопасность</td><td class="co">Netwrix</td><td>UX/UI → Senior Product Designer</td><td>6</td></tr>
+      <tr><td>2024—наст.</td><td>Привилегированный доступ</td><td class="co">Индид</td><td>Старший дизайнер интерфейсов</td><td>3*</td></tr>
+    </table>
+    <p class="note" style="padding-left:0;">* дела в производстве, материалы не разглашаются до релиза</p>
+  </section>
+
+  <!-- КАРТОТЕКА ДЕЛ -->
+  <section class="sec">
+    <div class="sec-head"><h2>Картотека дел</h2><span class="pre-label">листы 3–11 · избранное</span></div>
+
+    <div class="card">
+      <div class="card__top"><span class="card__no">ДЕЛО № NWX-02 · Complex Research · CJM</span><span class="stamp stamp--inline">Закрыто</span></div>
+      <div class="card__subject">Подводные камни при решении проблемы интеграции</div>
+      <div class="card__rows">
+        <span class="pre-label">Обнаружено</span><span class="v">аттач-рейт <b>11%</b> при 75% у конкурентов; сама прошла путь клиента — барьеры на каждом шаге</span>
+        <span class="pre-label">Доказано</span><span class="v">карта пути клиента: проблема не в настройке, а во всей цепочке — от сайта до цены</span>
+        <span class="pre-label">Вещдок</span><span class="v evidence">кросс-продажи 100k → 340k · +240%</span>
+      </div>
+      <div class="card__go">материалы дела →</div>
+    </div>
+
+    <div class="card card--flag">
+      <span class="grif">ФЛАГМАНСКОЕ ДЕЛО</span>
+      <div class="card__top"><span class="card__no">ДЕЛО № NWX-04 · New Feature · Information Diagram</span><span class="stamp stamp--inline">Закрыто</span></div>
+      <div class="card__subject">Оценка рисков для продукта по IT безопасности</div>
+      <div class="card__rows">
+        <span class="pre-label">Обнаружено</span><span class="v">MSP нечем показать клиенту уязвимости его инфраструктуры на первой встрече</span>
+        <span class="pre-label">Показания</span><span class="v">«Оценка 6 — это плохо или нормально?» — пользователи не понимали индексы</span>
+        <span class="pre-label">Устранено</span><span class="v">полный цикл: define → ideate → create → feedback; риски стали ясными: <b>высокий / средний / низкий</b></span>
+      </div>
+      <div class="card__go">материалы дела →</div>
+    </div>
+
+    <div class="card">
+      <div class="card__top"><span class="card__no">ДЕЛО № NWX-05 · AI · Hackathon</span><span class="stamp stamp--inline">Закрыто</span></div>
+      <div class="card__subject">AI и отчёты: Просто спроси систему</div>
+      <div class="card__rows">
+        <span class="pre-label">Обнаружено</span><span class="v">сотни отчётов — как энциклопедия без поиска; помощь с запросами — частая просьба в поддержку</span>
+        <span class="pre-label">Вещдок</span><span class="v evidence">1 место на хакатоне Netwrix</span>
+      </div>
+      <div class="card__go">материалы дела →</div>
+    </div>
+
+    <div class="card">
+      <div class="card__top"><span class="card__no">ДЕЛО № PLX-01 · Design Process · Web</span><span class="stamp stamp--inline">Закрыто</span></div>
+      <div class="card__subject">Verifika: история перехода в облако</div>
+      <div class="card__rows">
+        <span class="pre-label">Обнаружено</span><span class="v"><b>30 проблем</b> опыта, собранных из тикетов поддержки и наблюдений за пользователями</span>
+        <span class="pre-label">Устранено</span><span class="v">10+ проблем в первой веб-версии; спроектированы все <b>28 экранов</b></span>
+      </div>
+      <div class="card__go">материалы дела →</div>
+    </div>
+
+    <div class="card">
+      <div class="card__top"><span class="card__no">ДЕЛО № NWX-01 · Design System · Tokens</span><span class="stamp stamp--inline">Закрыто</span></div>
+      <div class="card__subject">Разработка дизайн-системы</div>
+      <div class="card__rows">
+        <span class="pre-label">Обнаружено</span><span class="v">20+ продуктов, купленных с разными технологиями — ни одного общего интерфейсного языка</span>
+        <span class="pre-label">Вещдок</span><span class="v evidence">118 компонентов · 5+ команд используют ежедневно</span>
+      </div>
+      <div class="card__go">материалы дела →</div>
+    </div>
+
+    <div class="card">
+      <div class="card__top"><span class="card__no">ДЕЛО № IND-01…03 · PAM</span><span class="stamp stamp--inline stamp--open">В производстве</span></div>
+      <div class="card__subject">Дашборд · UX-стратегия · ИИ-пилоты</div>
+      <div class="card__rows">
+        <span class="pre-label">Статус</span><span class="v">материалы дел будут приобщены после релиза</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЛИЧНОЕ ДЕЛО -->
+  <section class="sec">
+    <div class="sec-head"><h2>Личное дело</h2><span class="pre-label">лист 12 · автобиография</span></div>
+    <div class="fields" style="max-width:none;">
+      <span class="pre-label">Происхождение</span><span class="val">Сибирь</span>
+      <span class="pre-label">Образование</span><span class="val">ТГУ, факультет иностранных языков (2014) · художественная школа, с отличием (2006)</span>
+      <span class="pre-label">Путь</span><span class="val">лингвист → переводчик → контроль качества перевода → UX-дизайнер (с 2019)</span>
+    </div>
+    <blockquote class="quote">
+      «Дизайн — это не столько о том, чтобы сделать красиво, а о том, чтобы помочь людям
+      эффективнее решать их проблемы и задачи. Меня словно озарило — именно этого понимания
+      мне не хватало. С тех пор я знала, чем хочу заниматься.»
+      <span class="who">из показаний субъекта</span>
+    </blockquote>
+  </section>
+
+  <!-- ОПИСЬ ПРИЛОЖЕНИЙ -->
+  <section class="sec">
+    <div class="sec-head"><h2>Опись приложений</h2><span class="pre-label">сертификаты · бейджи не приобщены (TODO)</span></div>
+    <ul class="inventory">
+      <li>Nielsen Norman Group — UX Certificate<span class="yr">2024</span></li>
+      <li>Design Thinking Center — Practitioner<span class="yr">2024</span></li>
+      <li>IDF — AI for Designers<span class="yr">2023</span></li>
+      <li>Coursera (Yale) — Intro to Psychology<span class="yr">2023</span></li>
+      <li>IDF — Human-Computer Interaction · UI Patterns<span class="yr">2020</span></li>
+      <li>Springboard — UX Design · User Research<span class="yr">2019</span></li>
+      <li>Rubius Academy — Проектирование интерфейсов<span class="yr">2019</span></li>
+      <li>Codecademy — Web Dev (HTML &amp; CSS)<span class="yr">2019</span></li>
+    </ul>
+  </section>
+
+  <!-- СВЯЗЬ -->
+  <section class="sec">
+    <div class="sec-head"><h2>Для связи с аудитором</h2><span class="pre-label">лист 14 · последний</span></div>
+    <div class="contact-fields">
+      <span class="pre-label">Email</span><span class="val">— не заполнено (TODO)</span>
+      <span class="pre-label">Telegram</span><span class="val">— не заполнено (TODO)</span>
+      <span class="pre-label">LinkedIn</span><span class="val">— не заполнено (TODO)</span>
+    </div>
+  </section>
+
+  <div class="foot">
+    <span class="form-no">Дело сформировано: catux · К. Гилёва<br>Прошито и пронумеровано: 14 листов</span>
+    <span class="stamp">Аудит пройден</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  document.body.classList.add('js');
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var stamps = document.querySelectorAll('.stamp');
+  if(reduced){ stamps.forEach(function(s){ s.classList.add('is-stamped'); }); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      setTimeout(function(){ e.target.classList.add('is-stamped'); }, 180);
+      io.unobserve(e.target);
+    });
+  }, {threshold:0.6});
+  stamps.forEach(function(s){ io.observe(s); });
+})();
+</script>

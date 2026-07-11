@@ -1,0 +1,265 @@
+<meta charset="UTF-8">
+<title>Концепт 1 · Билингва — catux</title>
+<!-- ============================================================
+  КОНЦЕПТ-МАКЕТ 1 · «БИЛИНГВА»
+  Альтернативная метафора главной страницы портфолио catux.
+  Не продакшен: отдельная страница для сравнения концепций.
+  Метафора: двуязычное издание. Слева (чётная полоса) — оригинал
+  на языке системы, справа — перевод на язык людей. Кэт — переводчик.
+  Конвенция билингвы соблюдена: оригинал слева, перевод справа.
+============================================================ -->
+<style>
+  :root{
+    --paper:#f7f4eb;       /* книжная бумага */
+    --ink:#28251e;         /* текст перевода (люди) */
+    --sys:#5d594c;         /* текст оригинала (система) */
+    --hair:#d6d2c0;        /* линейки, корешок */
+    --note:#a83c28;        /* прим. пер. — терракота catux */
+    --dim:#8b8776;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --paper:#23211a; --ink:#eae6d7; --sys:#a5a08c; --hair:#434135;
+      --note:#d9694e; --dim:#8b8776; }
+  }
+  :root[data-theme="dark"]{ --paper:#23211a; --ink:#eae6d7; --sys:#a5a08c;
+    --hair:#434135; --note:#d9694e; --dim:#8b8776; }
+  :root[data-theme="light"]{ --paper:#f7f4eb; --ink:#28251e; --sys:#5d594c;
+    --hair:#d6d2c0; --note:#a83c28; --dim:#8b8776; }
+
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:Georgia,"Times New Roman",serif; font-size:15px; line-height:1.62;}
+  .book{max-width:880px; margin:0 auto; padding:0 24px;}
+  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;}
+
+  /* колонтитул */
+  .running-head{display:flex; justify-content:space-between; align-items:baseline;
+    padding:16px 2px 10px; border-bottom:1px solid var(--hair);
+    font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:var(--dim);
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;}
+
+  /* разворот: оригинал | корешок | перевод */
+  .spread{display:grid; grid-template-columns:1fr 1fr; column-gap:72px; position:relative; padding:40px 2px;}
+  .spread::before{content:""; position:absolute; top:0; bottom:0; left:50%; width:1px;
+    background:linear-gradient(to right, transparent, var(--hair)); box-shadow:14px 0 22px -14px rgba(40,37,30,.18);}
+  .page-label{font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:9px;
+    letter-spacing:2px; text-transform:uppercase; color:var(--dim); margin-bottom:20px;}
+  .page--sys{color:var(--sys); font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:13px;}
+
+  /* титульный разворот */
+  .spec{border:1px solid var(--hair); padding:20px 22px; font-size:12.5px; line-height:2.05;}
+  .spec b{color:var(--ink); font-weight:600;}
+  .hero-claim{font-size:clamp(30px,4.6vw,44px); line-height:1.16; margin:0 0 26px; font-weight:400; text-wrap:balance;}
+  .hero-claim em{font-style:italic; color:var(--note);}
+  .byline{font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:11px;
+    letter-spacing:2px; text-transform:uppercase; color:var(--dim); line-height:2;}
+  .byline b{color:var(--ink); font-weight:600;}
+
+  /* оглавление */
+  .toc{border-top:1px solid var(--hair); padding:34px 2px 8px;}
+  .toc-part{margin-bottom:30px;}
+  .toc-part h3{font-size:13px; letter-spacing:2px; text-transform:uppercase; margin:0 0 4px; font-weight:600;
+    font-family:ui-monospace,"SF Mono",Menlo,monospace;}
+  .toc-part .years{color:var(--dim); font-size:11px; font-family:ui-monospace,Menlo,monospace; letter-spacing:1px;}
+  .epigraph{font-style:italic; color:var(--dim); font-size:13.5px; margin:10px 0 14px; max-width:44ch;}
+  .toc-row{display:flex; align-items:baseline; gap:10px; padding:5px 0; font-size:14px;}
+  .toc-row .dots{flex:1; border-bottom:1px dotted var(--hair); transform:translateY(-4px);}
+  .toc-row .pg{font-family:ui-monospace,Menlo,monospace; font-size:11px; color:var(--dim);}
+  .toc-row .wip{font-family:ui-monospace,Menlo,monospace; font-size:10px; color:var(--note); letter-spacing:1px;}
+
+  /* главы: пары оригинал → перевод */
+  .chapter{display:grid; grid-template-columns:1fr 1fr; column-gap:72px; position:relative;
+    padding:34px 2px; border-top:1px solid var(--hair);}
+  .chapter::before{content:""; position:absolute; top:0; bottom:0; left:50%; width:1px;
+    background:var(--hair);}
+  .orig{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; color:var(--sys);
+    font-size:15px; line-height:1.6; padding-top:4px;}
+  .orig::before{content:"оригинал"; display:block; font-size:9px; letter-spacing:2px;
+    text-transform:uppercase; color:var(--dim); margin-bottom:12px;}
+  .trans{font-size:21px; line-height:1.42;}
+  .trans::before{content:"перевод"; display:block; font-size:9px; letter-spacing:2px;
+    text-transform:uppercase; color:var(--dim); margin-bottom:12px;
+    font-family:ui-monospace,Menlo,monospace;}
+  .chapter .meta{grid-column:1 / -1; margin-top:20px; font-family:ui-monospace,Menlo,monospace;
+    font-size:11px; color:var(--dim); letter-spacing:.6px;}
+  .chapter .meta b{color:var(--ink); font-weight:600;}
+  .chapter .meta .go{color:var(--note);}
+  body.js .reveal{opacity:0; transform:translateY(6px);}
+  body.js .reveal.is-in{opacity:1; transform:none; transition:opacity .45s ease, transform .45s ease;}
+  body.js .trans.reveal.is-in{transition-delay:.3s;}
+  @media (prefers-reduced-motion:reduce){
+    body.js .reveal{opacity:1 !important; transform:none !important; transition:none !important;}
+  }
+
+  /* прим. пер. */
+  .tn{max-width:52ch; margin:26px auto 0; padding:0 2px; font-size:13px; color:var(--note); font-style:italic;}
+  .tn::before{content:"прим. пер.:"; font-style:normal; font-weight:700; margin-right:6px;
+    font-size:11px; letter-spacing:1px;}
+
+  /* предисловие переводчика */
+  .preface{max-width:58ch; margin:0 auto; padding:40px 2px;}
+  .preface h2, .colophon h2, .contact h2{font-size:13px; letter-spacing:3px; text-transform:uppercase;
+    text-align:center; font-weight:600; margin:0 0 26px; font-family:ui-monospace,Menlo,monospace;}
+  .preface p{margin:0 0 14px;}
+  .preface .sig{text-align:right; font-style:italic; color:var(--dim); margin-top:20px;}
+  .timeline{display:flex; flex-wrap:wrap; gap:8px 26px; justify-content:center; margin-top:26px;
+    font-family:ui-monospace,Menlo,monospace; font-size:11px; color:var(--dim); letter-spacing:.8px;}
+  .timeline b{color:var(--note); font-weight:600;}
+
+  /* выходные данные */
+  .colophon{border-top:1px solid var(--hair); padding:36px 2px; text-align:center;}
+  .colophon p{max-width:60ch; margin:0 auto 10px; font-size:12.5px; color:var(--sys); line-height:1.9;}
+  .colophon .mono{font-size:10.5px; letter-spacing:1px; color:var(--dim);}
+
+  /* контакты */
+  .contact{border-top:1px solid var(--hair); padding:36px 2px 12px; text-align:center;}
+  .contact p{font-size:14px; margin:0 0 18px;}
+  .contact .mono{font-size:11px; color:var(--note); letter-spacing:1.5px; line-height:2.2;}
+
+  .folio{display:flex; justify-content:space-between; padding:22px 2px 34px;
+    font-family:ui-monospace,Menlo,monospace; font-size:10px; color:var(--dim); letter-spacing:2px;}
+
+  @media (max-width:680px){
+    .spread,.chapter{grid-template-columns:1fr; row-gap:26px;}
+    .spread::before,.chapter::before{display:none;}
+    .trans{border-top:1px dotted var(--hair); padding-top:22px;}
+  }
+</style>
+
+<div class="book">
+
+  <div class="running-head">
+    <span>Катерина Гилёва · портфолио-билингва</span>
+    <span>catux</span>
+  </div>
+
+  <!-- ТИТУЛЬНЫЙ РАЗВОРОТ -->
+  <section class="spread">
+    <div class="page--sys">
+      <div class="page-label">оригинал · язык системы</div>
+      <div class="spec">
+        SUBJECT ....... <b>GILEVA, EKATERINA</b><br>
+        ROLE .......... SENIOR PRODUCT DESIGNER<br>
+        DOMAINS ....... LOCALIZATION → CYBERSEC → PAM<br>
+        EXPERIENCE .... 7+ YRS<br>
+        INPUT ......... COMPLEX SYSTEMS<br>
+        OUTPUT ........ HUMAN CLARITY
+      </div>
+    </div>
+    <div>
+      <div class="page-label">перевод · язык людей</div>
+      <h1 class="hero-claim">Перевожу с&nbsp;языка систем — на&nbsp;язык <em>людей</em>.</h1>
+      <div class="byline"><b>Катерина Гилёва</b><br>старший дизайнер цифровых продуктов<br>лингвист по образованию — переводчик по методу</div>
+    </div>
+  </section>
+
+  <!-- ОГЛАВЛЕНИЕ -->
+  <section class="toc">
+    <h2 style="font-size:13px; letter-spacing:3px; text-transform:uppercase; text-align:center; font-weight:600; margin:0 0 30px; font-family:ui-monospace,Menlo,monospace;">Оглавление</h2>
+    <div class="toc-part">
+      <h3>Часть I · Локализация</h3>
+      <span class="years">Palex-Soft · 2019—2021</span>
+      <p class="epigraph">«Ошибки в переводах могут привести к серьёзным проблемам в производстве — и даже к медицинским ошибкам с необратимыми последствиями.»</p>
+      <div class="toc-row"><span>Verifika: история перехода в облако</span><span class="dots"></span><span class="pg">стр. 04</span></div>
+      <div class="toc-row"><span>Оценка качества перевода в Verifika</span><span class="dots"></span><span class="pg">стр. 12</span></div>
+      <div class="toc-row"><span>МИРОН — наш CAT</span><span class="dots"></span><span class="pg">стр. 16</span></div>
+    </div>
+    <div class="toc-part">
+      <h3>Часть II · Кибербезопасность</h3>
+      <span class="years">Netwrix · 2021—2024</span>
+      <p class="epigraph">«Представьте: на первой встрече с клиентом вы показываете ему список уязвимостей в его инфраструктуре.»</p>
+      <div class="toc-row"><span>Разработка дизайн-системы</span><span class="dots"></span><span class="pg">стр. 20</span></div>
+      <div class="toc-row"><span>Подводные камни при решении проблемы интеграции</span><span class="dots"></span><span class="pg">стр. 28</span></div>
+      <div class="toc-row"><span>1Secure: Лоск для поиска</span><span class="dots"></span><span class="pg">стр. 36</span></div>
+      <div class="toc-row"><span>Оценка рисков для продукта по IT безопасности</span><span class="dots"></span><span class="pg">стр. 40</span></div>
+      <div class="toc-row"><span>AI и отчёты: Просто спроси систему</span><span class="dots"></span><span class="pg">стр. 52</span></div>
+      <div class="toc-row"><span>Редизайн Netwrix PPE</span><span class="dots"></span><span class="pg">стр. 58</span></div>
+    </div>
+    <div class="toc-part">
+      <h3>Часть III · Привилегированный доступ</h3>
+      <span class="years">Индид · 2024—наст. время</span>
+      <div class="toc-row"><span>Проектирование дашборда</span><span class="dots"></span><span class="wip">в переводе</span></div>
+      <div class="toc-row"><span>UX-стратегия и встраивание в процессы</span><span class="dots"></span><span class="wip">в переводе</span></div>
+      <div class="toc-row"><span>ИИ-пилоты</span><span class="dots"></span><span class="wip">в переводе</span></div>
+    </div>
+  </section>
+
+  <!-- ГЛАВЫ: ПАРЫ ОРИГИНАЛ → ПЕРЕВОД -->
+  <section class="chapter">
+    <div class="orig reveal">RISK SCORE: 6.3<br><br>«Оценка 6 — это плохо или нормально? Как рассчитывается общий уровень риска?»</div>
+    <div class="trans reveal">Высокий. Средний. Низкий.<br>И понятно, что делать дальше.</div>
+    <div class="meta">глава 7 · <b>Оценка рисков для продукта по IT безопасности</b> · Netwrix 1Secure · полный цикл от стратегии до фидбека · <span class="go">читать главу →</span></div>
+  </section>
+
+  <section class="chapter">
+    <div class="orig reveal">СОТНИ ОТЧЁТОВ.<br>В ОДНОМ ИЗ НИХ — ВАШ ОТВЕТ.<br><br>Помощь в составлении запроса — одна из частых просьб в техподдержку.</div>
+    <div class="trans reveal">Просто спросите систему — по-человечески.</div>
+    <div class="meta">глава 8 · <b>AI и отчёты: Просто спроси систему</b> · 1 место на хакатоне Netwrix · <span class="go">читать главу →</span></div>
+  </section>
+
+  <section class="chapter">
+    <div class="orig reveal">ЗАДАЧА: УПРОСТИТЬ НАСТРОЙКУ ИНТЕГРАЦИИ ДВУХ ПРОДУКТОВ.</div>
+    <div class="trans reveal">Проблема была не в настройке.<br>Карта пути клиента показала барьеры от сайта до цены — и кросс-продажи выросли на 240%.</div>
+    <div class="meta">глава 5 · <b>Подводные камни при решении проблемы интеграции</b> · CJM · 100k → 340k за квартал · <span class="go">читать главу →</span></div>
+  </section>
+
+  <section class="chapter">
+    <div class="orig reveal">DESKTOP APP · 100+ ТИПОВ ОШИБОК ПЕРЕВОДА · УСТАНОВКА ТРЕБУЕТСЯ</div>
+    <div class="trans reveal">Открывается в браузере.<br>30 проблем найдено, 10+ решено в первой версии.</div>
+    <div class="meta">глава 1 · <b>Verifika: история перехода в облако</b> · 28 экранов · <span class="go">читать главу →</span></div>
+  </section>
+
+  <section class="chapter">
+    <div class="orig reveal">20+ ПРОДУКТОВ. У КАЖДОГО — СВОЙ ИНТЕРФЕЙСНЫЙ ДИАЛЕКТ.</div>
+    <div class="trans reveal">Один язык: 118 компонентов, светлая и тёмная тема, токены до кода.</div>
+    <div class="meta">глава 4 · <b>Разработка дизайн-системы</b> · 5+ команд используют ежедневно · <span class="go">читать главу →</span></div>
+  </section>
+
+  <p class="tn reveal">здесь я когда-то собрала все отделы разом и выложила им всё, что нашла. Меня не услышали. Урок: показывать находки каждому отделу отдельно — и заранее.</p>
+
+  <!-- ПРЕДИСЛОВИЕ ПЕРЕВОДЧИКА -->
+  <section class="preface" style="border-top:1px solid var(--hair); margin-top:36px;">
+    <h2>Предисловие переводчика</h2>
+    <p>Я Кэт, проектировщик цифровых продуктов родом из прекрасной Сибири. По образованию я лингвист, и после университета работала переводчиком. Рисовать начала в три года, с отличием окончила художку — цвет и композиция со мной всю жизнь.</p>
+    <p>В локализационной компании я изучила Verifika от и до — и начала предлагать разработчикам идеи, как сделать её полезнее. Так я узнала простую истину: дизайн — это не «сделать красиво». Это помочь людям решать их задачи. Меня словно озарило — именно этого понимания мне не хватало.</p>
+    <p>С тех пор я перевожу: с языка переводчиков, безопасников и админов — на язык интерфейсов, и обратно.</p>
+    <p class="sig">— К. Г.</p>
+    <div class="timeline">
+      <span>художка · 2006</span><span>ТГУ, иностр. языки · 2014</span><span>переводчик · Palex</span><span><b>дизайнер · с 2019</b></span>
+    </div>
+  </section>
+
+  <!-- ВЫХОДНЫЕ ДАННЫЕ -->
+  <section class="colophon">
+    <h2>Выходные данные</h2>
+    <p>Навыки: User Research · Design Process · Design System · Rapid Prototyping · Teamwork · Problem Solving</p>
+    <p>Сертификаты: Nielsen Norman Group (2024) · Design Thinking Center (2024) · IDF ×2 · Coursera/Yale · Springboard · Rubius · Codecademy</p>
+    <p class="mono">Набрано в две колонки: оригинал — моноширинным, перевод — антиквой.<br>Акцент: терракота catux. Тираж: 1 экз., пополняется.</p>
+  </section>
+
+  <!-- СВЯЗАТЬСЯ -->
+  <section class="contact">
+    <h2>Связаться с переводчиком</h2>
+    <p>Открыта к интересным задачам и сотрудничеству.</p>
+    <div class="mono">EMAIL — TODO · TELEGRAM — TODO · LINKEDIN — TODO</div>
+  </section>
+
+  <div class="folio"><span>02</span><span>catux · 2026</span><span>03</span></div>
+</div>
+
+<script>
+(function(){
+  document.body.classList.add('js');
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var els = document.querySelectorAll('.reveal');
+  if(reduced){ els.forEach(function(el){ el.classList.add('is-in'); }); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      e.target.classList.add('is-in');
+      io.unobserve(e.target);
+    });
+  }, {threshold:0.15, rootMargin:'0px 0px -5% 0px'});
+  els.forEach(function(el){ io.observe(el); });
+})();
+</script>
