@@ -7,6 +7,125 @@
   var Y0=2019, Y1=2026, span=Y1-Y0;
   function pct(y){ return ((y-Y0)/span)*100; }
 
+  /* ============================================================================
+     ДВИЖЕНИЕ И АНИМАЦИИ (см. CONTEXT.md → «Движение и анимации»)
+     Общие правила: каждый эффект — один раз при въезде в вид; полностью
+     отключается при prefers-reduced-motion; без новых цветов.
+     ============================================================================ */
+  function prefersReducedMotion(){
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  /* — приём 1: декодирование текста — ТОЛЬКО моно-подписи (не Ubuntu-заголовки) — */
+  var DECODE_GLYPHS = '#%&*+=~^<>/\\|01';
+  var LETTER_RE = /[0-9A-Za-zА-Яа-яЁё]/;
+  function decodeReveal(el, duration){
+    var final = el.textContent;
+    var chars = final.split('');
+    var start = null;
+    function frame(ts){
+      if(!start){ start = ts; }
+      var progress = Math.min((ts - start) / duration, 1);
+      var revealCount = Math.floor(progress * chars.length);
+      var out = '';
+      for(var i=0; i<chars.length; i++){
+        var ch = chars[i];
+        out += (i < revealCount || !LETTER_RE.test(ch)) ? ch : DECODE_GLYPHS[Math.floor(Math.random()*DECODE_GLYPHS.length)];
+      }
+      el.textContent = out;
+      if(progress < 1){ requestAnimationFrame(frame); }
+      else { el.textContent = final; }
+    }
+    requestAnimationFrame(frame);
+  }
+  function decodeGroup(group){
+    var els = document.querySelectorAll('[data-decode-group="'+group+'"]');
+    for(var i=0; i<els.length; i++){ decodeReveal(els[i], 500); }
+  }
+  function initDecodeEffect(){
+    if(prefersReducedMotion()) return; /* текст остаётся читаемым сразу, без анимации */
+
+    decodeGroup('chrome'); /* строка состояния и стики-футер видны сразу при загрузке */
+
+    var seen = {};
+    var sectionObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(!entry.isIntersecting) return;
+        var group = entry.target.getAttribute('data-decode-section');
+        if(seen[group]) return;
+        seen[group] = true;
+        decodeGroup(group);
+        sectionObserver.unobserve(entry.target);
+      });
+    }, {threshold:0.35});
+
+    ['a','b','c','d','e'].forEach(function(s){
+      var sectionEl = document.getElementById('sec-'+s);
+      if(!sectionEl) return;
+      sectionEl.setAttribute('data-decode-section', s);
+      sectionObserver.observe(sectionEl);
+    });
+  }
+
+  /* — приём 2: ASCII-портрет в дисплее SEC A — ждёт настоящее фото — */
+  function toAsciiLines(cells, cols, rows){
+    var lines = [];
+    for(var r=0; r<rows; r++){ lines.push(cells.slice(r*cols, (r+1)*cols).join('')); }
+    return lines.join('\n');
+  }
+  function shuffle(arr){
+    for(var i=arr.length-1; i>0; i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+  function renderAsciiPortrait(img, screen, pre){
+    var cols = 30, rows = 20;
+    var canvas = document.createElement('canvas');
+    canvas.width = cols; canvas.height = rows;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, cols, rows);
+    var data = ctx.getImageData(0, 0, cols, rows).data;
+    var ramp = ' .:-=+*#%@'; /* от светлого к тёмному, плотность символа = плотность тона */
+    var cells = [];
+    for(var i=0; i<cols*rows; i++){
+      var r=data[i*4], g=data[i*4+1], b=data[i*4+2];
+      var lum = (r*0.299 + g*0.587 + b*0.114) / 255;
+      cells.push(ramp[Math.round((1-lum) * (ramp.length-1))]);
+    }
+    screen.classList.add('has-photo');
+
+    if(prefersReducedMotion()){
+      pre.textContent = toAsciiLines(cells, cols, rows);
+      return;
+    }
+
+    /* проявление из редких точек в узнаваемое изображение */
+    var order = shuffle(cells.map(function(_, i){ return i; }));
+    var revealed = new Array(cells.length).fill(false);
+    var duration = 1400, start = null;
+    function frame(ts){
+      if(!start){ start = ts; }
+      var progress = Math.min((ts - start) / duration, 1);
+      var count = Math.floor(progress * order.length);
+      for(var i=0; i<count; i++){ revealed[order[i]] = true; }
+      var out = cells.map(function(ch, i){ return revealed[i] ? ch : ' '; });
+      pre.textContent = toAsciiLines(out, cols, rows);
+      if(progress < 1){ requestAnimationFrame(frame); }
+    }
+    requestAnimationFrame(frame);
+  }
+  function initAsciiPortrait(){
+    var screen = document.getElementById('portrait-screen');
+    var pre = document.getElementById('ascii-portrait');
+    if(!screen || !pre) return;
+    var img = new Image();
+    img.onload = function(){ renderAsciiPortrait(img, screen, pre); };
+    img.onerror = function(){ /* оригинала портрета ещё нет — оставляем текстовую заглушку */ };
+    img.src = 'assets/images/portrait.jpg'; /* TODO: заменить на оригинал портрета */
+  }
+
   /* — годовая шкала — */
   var axis=document.getElementById('axis'), ticks=document.getElementById('ticks');
   for(var y=Y0; y<=Y1; y++){
@@ -94,13 +213,23 @@
       plates[k].classList.toggle('is-active', plates[k].getAttribute('data-co')===co);
     }
 
+    var items = cases[co];
+    var reduced = prefersReducedMotion();
+    var STEP = 90; /* мс между маркерами — «машина проигрывает таймлайн» */
+
+    /* приём 3: каскад — маркеры и список выезжают в хронологическом порядке (по x) */
+    var chronoOrder = items.map(function(_,i){ return i; }).sort(function(a,b){ return items[a].x - items[b].x; });
+    var cascadeDelay = {};
+    chronoOrder.forEach(function(origIdx, orderPos){ cascadeDelay[origIdx] = orderPos*STEP; });
+
     /* треугольники-релизы на оси — все одного размера */
     markers.innerHTML='';
-    cases[co].forEach(function(c,i){
+    items.forEach(function(c,i){
       var m=document.createElement('button');
-      m.className='marker';
+      m.className='marker'+(reduced?'':' marker--cascade');
       m.setAttribute('aria-label', c.title);
       m.style.left=pct(c.x)+'%';
+      if(!reduced){ m.style.animationDelay = cascadeDelay[i]+'ms'; }
       var fill = c.stub ? 'none' : 'var(--text-muted)';
       var stroke = c.stub ? 'stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="2 1.5"' : '';
       m.innerHTML='<svg width="11" height="8" viewBox="0 0 14 10"><polygon points="7,1 13,9 1,9" fill="'+fill+'" '+stroke+'/></svg>'+
@@ -114,9 +243,17 @@
       markers.appendChild(m);
     });
 
-    /* список кейсов — все пункты одинаковы */
+    /* список кейсов проступает следом за каскадом маркеров */
+    var listStart = reduced ? 0 : (chronoOrder.length*STEP + 120);
     list.innerHTML='';
-    cases[co].forEach(function(c,i){ list.appendChild(caseRow(co,c,i)); });
+    items.forEach(function(c,i){
+      var row = caseRow(co,c,i);
+      if(!reduced){
+        row.classList.add('case-row--cascade');
+        row.style.animationDelay = (listStart + i*60)+'ms';
+      }
+      list.appendChild(row);
+    });
   }
 
   function caseRow(co,c,i){
@@ -215,4 +352,7 @@
     });
     fn.appendChild(b);
   });
+
+  initDecodeEffect();
+  initAsciiPortrait();
 })();

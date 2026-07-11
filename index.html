@@ -14,8 +14,9 @@
 
   <!-- строка состояния -->
   <div class="statusbar">
-    <span class="statusbar__brand">catux</span>
-    <span class="statusbar__doc">ПОРТФОЛИО · 2019 → 2026</span>
+    <span class="status-lamp" aria-hidden="true"></span>
+    <span class="statusbar__id"><span class="statusbar__brand" data-decode-group="chrome">catux</span><span class="caret" aria-hidden="true"></span></span>
+    <span class="statusbar__doc" data-decode-group="chrome">ПОРТФОЛИО · 2019 → 2026</span>
     <span class="logo-mark" aria-hidden="true">
       <!-- ЗАГЛУШКА лого: заменить оригинальным SVG кота catux -->
       <svg width="9" height="9" viewBox="-20 -22 40 44" fill="none" stroke="var(--surface-0)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><path d="M -7 -18 L -10 -6"/><path d="M 7 -18 L 12 -8"/><circle cx="0" cy="-4" r="9"/><circle cx="-1" cy="11" r="11"/><path d="M 9 16 L 15 18"/></svg>
@@ -24,18 +25,22 @@
 
   <!-- ============ SEC A · ИНТРО ============ -->
   <section class="intro" id="sec-a">
-    <div class="eyebrow eyebrow--accent">SEC A · ИНТРО</div>
+    <div class="eyebrow eyebrow--accent" data-decode-group="a">SEC A · ИНТРО</div>
     <div class="intro__row">
       <div class="intro__col">
         <h1 class="intro__name">Катерина Гилёва</h1>
-        <div class="intro__latin">EKATERINA GILEVA</div>
+        <div class="intro__latin" data-decode-group="a">EKATERINA GILEVA</div>
         <div class="role-badge"><span>СТАРШИЙ ДИЗАЙНЕР ЦИФРОВЫХ ПРОДУКТОВ</span></div>
         <p class="intro__lead">Лингвист, ставший продуктовым дизайнером.</p>
         <p class="intro__desc">Семь лет проектирую интерфейсы для сложного профессионального софта — от инструментов для переводчиков до систем кибербезопасности. Отношусь к дизайну как к переводу: с языка пользователя на язык системы.</p>
       </div>
       <div class="display-frame">
-        <div class="display-frame__screen">
-          <span>ПОРТРЕТ</span><span>оригинал — TODO</span>
+        <!-- ASCII-портрет: генерируется из assets/images/portrait.jpg по плотности
+             символов (см. js/script.js → initAsciiPortrait). Оригинала пока нет,
+             поэтому остаётся текстовая заглушка — механика ждёт реальное фото. -->
+        <div class="display-frame__screen" id="portrait-screen">
+          <span class="display-frame__fallback">ПОРТРЕТ</span><span class="display-frame__fallback">оригинал — TODO</span>
+          <pre class="ascii-portrait" id="ascii-portrait" aria-hidden="true"></pre>
         </div>
         <div class="display-frame__label">ДИСПЛЕЙ</div>
       </div>
@@ -45,7 +50,7 @@
   <!-- ============ SEC B · ОПЫТ И ПРОЕКТЫ ============ -->
   <section class="section" id="sec-b">
     <div class="band-head">
-      <span class="eyebrow" style="margin-bottom:0;">SEC B · ОПЫТ И ПРОЕКТЫ</span>
+      <span class="eyebrow" style="margin-bottom:0;" data-decode-group="b">SEC B · ОПЫТ И ПРОЕКТЫ</span>
       <span class="band-head__hint">выберите компанию ↓</span>
     </div>
     <h2 class="section-title">Семь лет на одной оси</h2>
@@ -65,7 +70,7 @@
 
   <!-- ============ SEC C · О СЕБЕ ============ -->
   <section class="section" id="sec-c">
-    <div class="eyebrow">SEC C · О СЕБЕ</div>
+    <div class="eyebrow" data-decode-group="c">SEC C · О СЕБЕ</div>
     <div class="about">
       <div class="about__text">
         <h2 class="section-title">Как лингвист попадает в дизайн</h2>
@@ -81,7 +86,7 @@
 
   <!-- ============ SEC D · СПЕЦИФИКАЦИЯ ============ -->
   <section class="section" id="sec-d">
-    <div class="eyebrow">SEC D · СПЕЦИФИКАЦИЯ</div>
+    <div class="eyebrow" data-decode-group="d">SEC D · СПЕЦИФИКАЦИЯ</div>
     <h2 class="section-title">Навыки, образование, курсы</h2>
     <div class="spec-sub">НАВЫКИ</div>
     <div class="skills" id="skills"></div>
@@ -100,7 +105,7 @@
 
   <!-- ============ SEC E · КОНТАКТЫ ============ -->
   <section class="contacts-head" id="sec-e">
-    <div class="eyebrow">SEC E · КОНТАКТЫ</div>
+    <div class="eyebrow" data-decode-group="e">SEC E · КОНТАКТЫ</div>
     <h2 class="contacts-title">Давайте поговорим</h2>
     <p class="contacts-lead">Открыта к интересным задачам и сотрудничеству.</p>
   </section>
@@ -109,8 +114,8 @@
       <span class="logo-mark" aria-hidden="true">
         <svg width="9" height="9" viewBox="-20 -22 40 44" fill="none" stroke="var(--surface-1)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><path d="M -7 -18 L -10 -6"/><path d="M 7 -18 L 12 -8"/><circle cx="0" cy="-4" r="9"/><circle cx="-1" cy="11" r="11"/><path d="M 9 16 L 15 18"/></svg>
       </span>
-      <span class="titleblock__brand">catux · Е. ГИЛЁВА</span>
-      <span class="titleblock__doc">DOC: PORTFOLIO / 2026 · REV 08.07</span>
+      <span class="titleblock__brand" data-decode-group="e">catux · Е. ГИЛЁВА</span>
+      <span class="titleblock__doc" data-decode-group="e">DOC: PORTFOLIO / 2026 · REV 08.07</span>
     </div>
     <div class="titleblock__grid">
       <div class="tb-cell">
@@ -133,7 +138,7 @@
       </div>
     </div>
   </div>
-  <div class="sheet-end">КОНЕЦ ЛИСТА · КОНТАКТЫ — TODO</div>
+  <div class="sheet-end" data-decode-group="e">КОНЕЦ ЛИСТА · КОНТАКТЫ — TODO</div>
 
 </div>
 
@@ -143,7 +148,7 @@
     <span class="logo-mark" aria-hidden="true">
       <svg width="8" height="8" viewBox="-20 -22 40 44" fill="none" stroke="var(--dark-0)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M -7 -18 L -10 -6"/><path d="M 7 -18 L 12 -8"/><circle cx="0" cy="-4" r="9"/><circle cx="-1" cy="11" r="11"/><path d="M 9 16 L 15 18"/></svg>
     </span>
-    <span>catux</span>
+    <span data-decode-group="chrome">catux</span>
   </div>
   <div class="footer-nav__items" id="footer-nav"></div>
 </nav>
