@@ -71,10 +71,31 @@
 
   /* ——— SEC A интро ——— */
   .intro{padding:26px var(--pad-x) 30px;}
-  .intro__row{display:flex; gap:20px; align-items:flex-start;}
-  .intro__name{font-family:var(--font-display); font-size:34px; font-weight:500; line-height:1.1; margin:0;}
+  .intro__head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;}
+  .plotter-coords{font-family:var(--font-mono); font-size:10px; color:var(--text-faint);
+    letter-spacing:1px; font-variant-numeric:tabular-nums;}
+  /* «имя-чертёж»: зона плоттера — имя в две строки, каретка, регистрационные метки */
+  .plotter{position:relative; padding:16px 0 18px; border-bottom:1px solid var(--border-strong); margin-bottom:12px;}
+  .plotter__reg{position:absolute; width:11px; height:11px; pointer-events:none;}
+  .plotter__reg::before,.plotter__reg::after{content:""; position:absolute; background:var(--border-strong);}
+  .plotter__reg::before{width:100%; height:1px; top:50%;}
+  .plotter__reg::after{width:1px; height:100%; left:50%;}
+  .plotter__reg--tl{top:4px; left:0;}
+  .plotter__reg--br{bottom:4px; right:0;}
+  .intro__name{font-family:var(--font-display); font-weight:500; margin:0;
+    font-size:clamp(46px, 12.5vw, 92px); line-height:1.02; letter-spacing:-0.015em;}
+  /* display:table = блочная строка, сжатая по ширине текста —
+     каретка и clip-path тогда заканчиваются ровно на последней букве */
+  .plot-line{display:table;}
+  /* .is-armed прячет строки до старта отрисовки (JS ведёт clip-path за кареткой) */
+  .plotter.is-armed .plot-line{clip-path:inset(-10% 100% -10% 0);}
+  .plotter__crosshair{position:absolute; top:0; left:0; width:0; height:0; opacity:0; pointer-events:none;}
+  .plotter.is-plotting .plotter__crosshair{opacity:1;}
+  .plotter__crosshair::before,.plotter__crosshair::after{content:""; position:absolute; background:var(--accent);}
+  .plotter__crosshair::before{width:30px; height:1px; left:-15px; top:0;}
+  .plotter__crosshair::after{width:1px; height:30px; top:-15px; left:0;}
   .intro__latin{font-family:var(--font-mono); font-size:11px; color:var(--text-muted);
-    letter-spacing:2px; margin:4px 0 12px;}
+    letter-spacing:2px; margin:0 0 12px;}
   .role-badge{display:inline-flex; align-items:center; background:var(--accent-tint);
     border:0.5px solid var(--accent); padding:5px 11px; margin-bottom:16px;}
   .role-badge span{font-family:var(--font-mono); font-size:10px; color:var(--accent-deep); letter-spacing:0.5px;}
@@ -85,26 +106,6 @@
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; position:relative; overflow:hidden;}
   .display-frame__fallback:first-child{font-family:var(--font-mono); font-size:10px; color:var(--accent-warm); letter-spacing:1px;}
   .display-frame__fallback:last-child{font-family:var(--font-mono); font-size:9px; color:#888780;}
-  /* иллюстрация «схема сигнала» в SEC A: запрос → анализ → решение,
-     точка проходит по линии один раз при въезде в вид (см. js/script.js) */
-  .signal-diagram{position:relative; width:100%; height:100%;}
-  .signal-track{position:absolute; left:18px; right:18px; top:34px; height:1px; background:var(--dark-border);}
-  .signal-pulse{position:absolute; top:31px; left:18px; width:6px; height:6px; border-radius:50%;
-    background:var(--accent-warm); opacity:0; pointer-events:none;}
-  .signal-pulse.is-active{animation:signal-pulse-travel .9s linear forwards;}
-  @keyframes signal-pulse-travel{
-    0%{ left:18px; opacity:1; }
-    90%{ opacity:1; }
-    100%{ left:132px; opacity:0; }
-  }
-  .signal-node{position:absolute; top:24px; transform:translateX(-50%);
-    display:flex; flex-direction:column; align-items:center; gap:6px;}
-  .signal-node__dot{width:7px; height:7px; border-radius:50%; background:var(--dark-1);
-    border:1px solid var(--dark-border); transition:background-color .2s, border-color .2s, box-shadow .2s;}
-  .signal-node__label{font-family:var(--font-mono); font-size:7px; color:#888780; letter-spacing:0.5px; white-space:nowrap;}
-  .signal-node.is-lit .signal-node__dot{background:var(--accent); border-color:var(--accent);
-    box-shadow:0 0 4px 1px rgba(176,58,38,0.45);}
-  .signal-node.is-lit .signal-node__label{color:var(--accent-warm);}
   /* ASCII-портрет: заполняется из настоящего фото (см. initAsciiPortrait в js/script.js);
      пока оригинала нет — .has-photo не добавляется, показана текстовая заглушка выше. */
   .ascii-portrait{display:none; margin:0; font-family:var(--font-mono); font-size:5px; line-height:5px;
@@ -237,8 +238,9 @@
   .fn-item__name{font-size:7.5px; letter-spacing:0.5px;}
 
   @media (max-width:640px){
-    .intro__row,.about{flex-direction:column;}
+    .about{flex-direction:column;}
     .display-frame,.milestones{width:100%;}
+    .display-frame{max-width:150px;}
     .milestones{border-left:none; border-top:0.5px solid var(--border); padding-left:0; padding-top:14px;}
     .spec-cols,.titleblock__grid{grid-template-columns:1fr;}
     .case-tag{display:none;}
