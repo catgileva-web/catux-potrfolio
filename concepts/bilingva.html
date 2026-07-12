@@ -52,6 +52,25 @@
   .spec b{color:var(--ink); font-weight:600;}
   .hero-claim{font-size:clamp(30px,4.6vw,44px); line-height:1.16; margin:0 0 26px; font-weight:400; text-wrap:balance;}
   .hero-claim em{font-style:italic; color:var(--note);}
+
+  /* хиро-анимация «синхронный перевод»: курсор переводчика читает сегмент
+     оригинала слева (как в CAT-инструменте), справа пословно набирается
+     перевод. Один раз при загрузке; reduced-motion — сразу финал. */
+  .sw{padding:1px 3px; margin:-1px -3px; border-radius:2px;
+    transition:background-color .25s ease, color .25s ease;}
+  .sw.is-reading{background:var(--note); color:var(--paper);}
+  .sw.is-read{color:var(--ink);}
+  .hero-claim .hw{display:inline-block;}
+  body.js .hero-claim .hw{opacity:0; transform:translateY(10px);}
+  body.js .hero-claim .hw.is-set{opacity:1; transform:none;
+    transition:opacity .38s ease, transform .38s ease;}
+  body.js .byline{opacity:0;}
+  body.js .byline.is-set{opacity:1; transition:opacity .6s ease;}
+  @media (prefers-reduced-motion:reduce){
+    body.js .hero-claim .hw{opacity:1 !important; transform:none !important; transition:none !important;}
+    body.js .byline{opacity:1 !important; transition:none !important;}
+    .sw{transition:none;}
+  }
   .byline{font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:11px;
     letter-spacing:2px; text-transform:uppercase; color:var(--dim); line-height:2;}
   .byline b{color:var(--ink); font-weight:600;}
@@ -161,27 +180,28 @@
 <div class="book">
 
   <div class="running-head">
-    <span>Катерина Гилёва · портфолио-билингва</span>
+    <span>Катерина Гилёва · портфолио UX-дизайнера</span>
     <span>catux</span>
   </div>
 
   <!-- ТИТУЛЬНЫЙ РАЗВОРОТ -->
   <section class="spread">
-    <div class="page--sys reveal">
+    <div class="page--sys">
       <div class="page-label">оригинал · язык системы</div>
       <div class="spec">
-        SUBJECT ....... <b>GILEVA, EKATERINA</b><br>
+        NAME .......... <b>GILEVA, EKATERINA</b><br>
         ROLE .......... SENIOR PRODUCT DESIGNER<br>
-        DOMAINS ....... LOCALIZATION → CYBERSEC → PAM<br>
+        DOMAINS ....... LOCALIZATION → CYBERSEC<br>
         EXPERIENCE .... 7+ YRS<br>
         INPUT ......... COMPLEX SYSTEMS<br>
-        OUTPUT ........ HUMAN CLARITY
+        OUTPUT ........ HUMAN CLARITY<br>
+        MESSAGE ....... <span id="hero-seg"><span class="sw">ПЕРЕВОЖУ</span> <span class="sw">С&nbsp;ЯЗЫКА</span> <span class="sw">СИСТЕМ</span> <span class="sw">НА&nbsp;ЯЗЫК</span> <span class="sw">ЛЮДЕЙ</span></span>
       </div>
     </div>
-    <div class="reveal reveal--late">
+    <div>
       <div class="page-label">перевод · язык людей</div>
-      <h1 class="hero-claim">Перевожу с&nbsp;языка систем — на&nbsp;язык <em>людей</em>.</h1>
-      <div class="byline"><b>Катерина Гилёва</b><br>старший дизайнер цифровых продуктов<br>лингвист по образованию — переводчик по методу</div>
+      <h1 class="hero-claim" id="hero-claim"><span class="hw">Перевожу</span> <span class="hw">с&nbsp;языка</span> <span class="hw">систем</span> <span class="hw">на&nbsp;язык</span> <span class="hw"><em>людей</em></span></h1>
+      <div class="byline" id="hero-byline"><b>Катерина Гилёва</b><br>старший дизайнер цифровых продуктов</div>
     </div>
   </section>
 
@@ -312,6 +332,29 @@
     }, {passive:true});
     drawRibbon();
   }
+
+  /* хиро: «синхронный перевод» — курсор читает оригинал, справа набирается перевод */
+  (function(){
+    var seg = document.querySelectorAll('#hero-seg .sw');
+    var words = document.querySelectorAll('#hero-claim .hw');
+    var byline = document.getElementById('hero-byline');
+    if(!seg.length || !words.length || seg.length !== words.length) return;
+    if(reduced){
+      words.forEach(function(w){ w.classList.add('is-set'); });
+      if(byline) byline.classList.add('is-set');
+      return;
+    }
+    var STEP = 280, i = 0;
+    function tick(){
+      if(i > 0){ seg[i-1].classList.remove('is-reading'); seg[i-1].classList.add('is-read'); }
+      if(i >= seg.length){ if(byline) byline.classList.add('is-set'); return; }
+      seg[i].classList.add('is-reading');
+      words[i].classList.add('is-set');
+      i++;
+      setTimeout(tick, STEP);
+    }
+    setTimeout(tick, 500); /* короткая пауза: читатель успевает увидеть разворот */
+  })();
 
   var els = document.querySelectorAll('.reveal');
   if(reduced){ els.forEach(function(el){ el.classList.add('is-in'); }); return; }
