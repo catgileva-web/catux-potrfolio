@@ -27,6 +27,7 @@
     --hair:#d6d2c0; --note:#a83c28; --dim:#8b8776; }
 
   *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
   body{margin:0; background:var(--paper); color:var(--ink);
     font-family:Georgia,"Times New Roman",serif; font-size:15px; line-height:1.62;}
   .book{max-width:880px; margin:0 auto; padding:0 24px;}
@@ -57,7 +58,18 @@
 
   /* оглавление */
   .toc{border-top:1px solid var(--hair); padding:34px 2px 8px;}
+  a.toc-row{color:inherit; text-decoration:none;}
+  a.toc-row:hover .pg{color:var(--note);}
+  a.toc-row:hover .dots{border-bottom:1px solid var(--note); transform:translateY(-4px);}
   .toc-part{margin-bottom:30px;}
+
+  /* как читать эту книгу — пояснение приёма для читателя вне темы перевода */
+  .howto{border-top:1px solid var(--hair); padding:30px 2px;}
+  .howto .lbl{display:block; text-align:center; font-family:ui-monospace,Menlo,monospace;
+    font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--dim); margin-bottom:14px;}
+  .howto p{max-width:54ch; margin:0 auto; text-align:center; font-size:14px;
+    font-style:italic; color:var(--sys); line-height:1.7;}
+  .howto em{color:var(--note);}
   .toc-part h3{font-size:13px; letter-spacing:2px; text-transform:uppercase; margin:0 0 4px; font-weight:600;
     font-family:ui-monospace,"SF Mono",Menlo,monospace;}
   .toc-part .years{color:var(--dim); font-size:11px; font-family:ui-monospace,Menlo,monospace; letter-spacing:1px;}
@@ -67,29 +79,46 @@
   .toc-row .pg{font-family:ui-monospace,Menlo,monospace; font-size:11px; color:var(--dim);}
   .toc-row .wip{font-family:ui-monospace,Menlo,monospace; font-size:10px; color:var(--note); letter-spacing:1px;}
 
-  /* главы: пары оригинал → перевод */
-  .chapter{display:grid; grid-template-columns:1fr 1fr; column-gap:72px; position:relative;
-    padding:34px 2px; border-top:1px solid var(--hair);}
+  /* главы: пары оригинал → перевод.
+     Корешок НЕ прерывается: у каждой полосы свой подвал-сноска в своей
+     колонке (слева — библиография главы, справа — название и переход). */
+  .chapter{display:grid; grid-template-columns:1fr 1fr; grid-template-rows:auto auto;
+    column-gap:72px; row-gap:24px; position:relative; padding:34px 2px; border-top:1px solid var(--hair);}
   .chapter::before{content:""; position:absolute; top:0; bottom:0; left:50%; width:1px;
-    background:var(--hair);}
-  .orig{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; color:var(--sys);
-    font-size:15px; line-height:1.6; padding-top:4px;}
-  .orig::before{content:"оригинал"; display:block; font-size:9px; letter-spacing:2px;
-    text-transform:uppercase; color:var(--dim); margin-bottom:12px;}
-  .trans{font-size:21px; line-height:1.42;}
-  .trans::before{content:"перевод"; display:block; font-size:9px; letter-spacing:2px;
+    background:var(--hair); transition:background-color .25s ease;}
+  .chapter:hover::before{background:var(--note);}
+  /* стрелка на корешке: направление чтения оригинал → перевод */
+  .chapter::after{content:"→"; position:absolute; left:50%; top:50%;
+    transform:translate(-50%,-50%); background:var(--paper); padding:9px 2px;
+    color:var(--note); font-family:ui-monospace,Menlo,monospace; font-size:13px; line-height:1;}
+  .orig{grid-area:1/1; font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    color:var(--sys); font-size:14px; line-height:1.7; padding-top:4px;}
+  .trans{grid-area:1/2; font-size:19px; line-height:1.5;}
+  .orig::before,.trans::before{display:block; font-size:10px; letter-spacing:2px;
     text-transform:uppercase; color:var(--dim); margin-bottom:12px;
-    font-family:ui-monospace,Menlo,monospace;}
-  .chapter .meta{grid-column:1 / -1; margin-top:20px; font-family:ui-monospace,Menlo,monospace;
-    font-size:11px; color:var(--dim); letter-spacing:.6px;}
-  .chapter .meta b{color:var(--ink); font-weight:600;}
-  .chapter .meta .go{color:var(--note);}
+    font-family:ui-monospace,Menlo,monospace; font-weight:400;}
+  .orig::before{content:"оригинал";}
+  .trans::before{content:"перевод";}
+  .chfoot{align-self:end; font-family:ui-monospace,Menlo,monospace; font-size:11px;
+    line-height:1.7; color:var(--dim); letter-spacing:.4px; padding-top:10px;
+    border-top:1px dotted var(--hair);}
+  .chfoot--orig{grid-area:2/1;}
+  .chfoot--trans{grid-area:2/2;}
+  .chfoot--trans a{color:var(--ink); text-decoration:none; font-weight:600;}
+  .chfoot--trans .go{color:var(--note); white-space:nowrap;}
+  .chapter:hover .chfoot--trans .go{text-decoration:underline; text-underline-offset:3px;}
   body.js .reveal{opacity:0; transform:translateY(6px);}
   body.js .reveal.is-in{opacity:1; transform:none; transition:opacity .45s ease, transform .45s ease;}
-  body.js .trans.reveal.is-in{transition-delay:.3s;}
+  body.js .reveal--late.is-in{transition-delay:.3s;}
   @media (prefers-reduced-motion:reduce){
     body.js .reveal{opacity:1 !important; transform:none !important; transition:none !important;}
+    .chapter::before{transition:none;}
+    html{scroll-behavior:auto;}
   }
+
+  /* ляссе — закладка-прогресс чтения */
+  .ribbon{position:fixed; top:0; left:0; width:100%; height:2px; background:var(--note);
+    transform-origin:0 50%; transform:scaleX(0); z-index:10;}
 
   /* прим. пер. */
   .tn{max-width:52ch; margin:26px auto 0; padding:0 2px; font-size:13px; color:var(--note); font-style:italic;}
@@ -121,11 +150,14 @@
 
   @media (max-width:680px){
     .spread,.chapter{grid-template-columns:1fr; row-gap:26px;}
-    .spread::before,.chapter::before{display:none;}
+    .spread::before,.chapter::before,.chapter::after{display:none;}
+    .orig,.trans,.chfoot--orig,.chfoot--trans{grid-area:auto;}
     .trans{border-top:1px dotted var(--hair); padding-top:22px;}
+    .chfoot--orig{display:none;} /* на узком экране достаточно одной сноски */
   }
 </style>
 
+<div class="ribbon" id="ribbon" aria-hidden="true"></div>
 <div class="book">
 
   <div class="running-head">
@@ -135,7 +167,7 @@
 
   <!-- ТИТУЛЬНЫЙ РАЗВОРОТ -->
   <section class="spread">
-    <div class="page--sys">
+    <div class="page--sys reveal">
       <div class="page-label">оригинал · язык системы</div>
       <div class="spec">
         SUBJECT ....... <b>GILEVA, EKATERINA</b><br>
@@ -146,7 +178,7 @@
         OUTPUT ........ HUMAN CLARITY
       </div>
     </div>
-    <div>
+    <div class="reveal reveal--late">
       <div class="page-label">перевод · язык людей</div>
       <h1 class="hero-claim">Перевожу с&nbsp;языка систем — на&nbsp;язык <em>людей</em>.</h1>
       <div class="byline"><b>Катерина Гилёва</b><br>старший дизайнер цифровых продуктов<br>лингвист по образованию — переводчик по методу</div>
@@ -160,7 +192,7 @@
       <h3>Часть I · Локализация</h3>
       <span class="years">Palex-Soft · 2019—2021</span>
       <p class="epigraph">«Ошибки в переводах могут привести к серьёзным проблемам в производстве — и даже к медицинским ошибкам с необратимыми последствиями.»</p>
-      <div class="toc-row"><span>Verifika: история перехода в облако</span><span class="dots"></span><span class="pg">стр. 04</span></div>
+      <a class="toc-row" href="#ch-01"><span>Verifika: история перехода в облако</span><span class="dots"></span><span class="pg">стр. 04</span></a>
       <div class="toc-row"><span>Оценка качества перевода в Verifika</span><span class="dots"></span><span class="pg">стр. 12</span></div>
       <div class="toc-row"><span>МИРОН — наш CAT</span><span class="dots"></span><span class="pg">стр. 16</span></div>
     </div>
@@ -168,11 +200,11 @@
       <h3>Часть II · Кибербезопасность</h3>
       <span class="years">Netwrix · 2021—2024</span>
       <p class="epigraph">«Представьте: на первой встрече с клиентом вы показываете ему список уязвимостей в его инфраструктуре.»</p>
-      <div class="toc-row"><span>Разработка дизайн-системы</span><span class="dots"></span><span class="pg">стр. 20</span></div>
-      <div class="toc-row"><span>Подводные камни при решении проблемы интеграции</span><span class="dots"></span><span class="pg">стр. 28</span></div>
+      <a class="toc-row" href="#ch-04"><span>Разработка дизайн-системы</span><span class="dots"></span><span class="pg">стр. 20</span></a>
+      <a class="toc-row" href="#ch-05"><span>Подводные камни при решении проблемы интеграции</span><span class="dots"></span><span class="pg">стр. 28</span></a>
       <div class="toc-row"><span>1Secure: Лоск для поиска</span><span class="dots"></span><span class="pg">стр. 36</span></div>
-      <div class="toc-row"><span>Оценка рисков для продукта по IT безопасности</span><span class="dots"></span><span class="pg">стр. 40</span></div>
-      <div class="toc-row"><span>AI и отчёты: Просто спроси систему</span><span class="dots"></span><span class="pg">стр. 52</span></div>
+      <a class="toc-row" href="#ch-07"><span>Оценка рисков для продукта по IT безопасности</span><span class="dots"></span><span class="pg">стр. 40</span></a>
+      <a class="toc-row" href="#ch-08"><span>AI и отчёты: Просто спроси систему</span><span class="dots"></span><span class="pg">стр. 52</span></a>
       <div class="toc-row"><span>Редизайн Netwrix PPE</span><span class="dots"></span><span class="pg">стр. 58</span></div>
     </div>
     <div class="toc-part">
@@ -184,38 +216,51 @@
     </div>
   </section>
 
+  <!-- КАК ЧИТАТЬ ЭТУ КНИГУ — пояснение приёма для читателя вне темы перевода -->
+  <section class="howto">
+    <span class="lbl">Как читать эту книгу</span>
+    <p>Каждый проект здесь дан как перевод. Слева — <em>оригинал</em>: задача,
+    как её видит система. Справа — <em>перевод</em>: решение, каким его
+    получил человек. Этот перевод и есть работа дизайнера.</p>
+  </section>
+
   <!-- ГЛАВЫ: ПАРЫ ОРИГИНАЛ → ПЕРЕВОД -->
-  <section class="chapter">
+  <section class="chapter" id="ch-07">
     <div class="orig reveal">RISK SCORE: 6.3<br><br>«Оценка 6 — это плохо или нормально? Как рассчитывается общий уровень риска?»</div>
-    <div class="trans reveal">Высокий. Средний. Низкий.<br>И понятно, что делать дальше.</div>
-    <div class="meta">глава 7 · <b>Оценка рисков для продукта по IT безопасности</b> · Netwrix 1Secure · полный цикл от стратегии до фидбека · <span class="go">читать главу →</span></div>
+    <div class="trans reveal reveal--late">Высокий. Средний. Низкий.<br>И понятно, что делать дальше.</div>
+    <div class="chfoot chfoot--orig">гл. 07 · Netwrix 1Secure · 2022—2024<br>New Feature · Information Diagram</div>
+    <div class="chfoot chfoot--trans"><a href="#ch-07">Оценка рисков для продукта по IT безопасности</a> · полный цикл от стратегии до фидбека <span class="go">читать →</span></div>
   </section>
 
-  <section class="chapter">
+  <section class="chapter" id="ch-08">
     <div class="orig reveal">СОТНИ ОТЧЁТОВ.<br>В ОДНОМ ИЗ НИХ — ВАШ ОТВЕТ.<br><br>Помощь в составлении запроса — одна из частых просьб в техподдержку.</div>
-    <div class="trans reveal">Просто спросите систему — по-человечески.</div>
-    <div class="meta">глава 8 · <b>AI и отчёты: Просто спроси систему</b> · 1 место на хакатоне Netwrix · <span class="go">читать главу →</span></div>
+    <div class="trans reveal reveal--late">Просто спросите систему — по-человечески.</div>
+    <div class="chfoot chfoot--orig">гл. 08 · Netwrix · 2023<br>AI · Hackathon</div>
+    <div class="chfoot chfoot--trans"><a href="#ch-08">AI и отчёты: Просто спроси систему</a> · 1 место на хакатоне <span class="go">читать →</span></div>
   </section>
 
-  <section class="chapter">
+  <section class="chapter" id="ch-05">
     <div class="orig reveal">ЗАДАЧА: УПРОСТИТЬ НАСТРОЙКУ ИНТЕГРАЦИИ ДВУХ ПРОДУКТОВ.</div>
-    <div class="trans reveal">Проблема была не в настройке.<br>Карта пути клиента показала барьеры от сайта до цены — и кросс-продажи выросли на 240%.</div>
-    <div class="meta">глава 5 · <b>Подводные камни при решении проблемы интеграции</b> · CJM · 100k → 340k за квартал · <span class="go">читать главу →</span></div>
-  </section>
-
-  <section class="chapter">
-    <div class="orig reveal">DESKTOP APP · 100+ ТИПОВ ОШИБОК ПЕРЕВОДА · УСТАНОВКА ТРЕБУЕТСЯ</div>
-    <div class="trans reveal">Открывается в браузере.<br>30 проблем найдено, 10+ решено в первой версии.</div>
-    <div class="meta">глава 1 · <b>Verifika: история перехода в облако</b> · 28 экранов · <span class="go">читать главу →</span></div>
-  </section>
-
-  <section class="chapter">
-    <div class="orig reveal">20+ ПРОДУКТОВ. У КАЖДОГО — СВОЙ ИНТЕРФЕЙСНЫЙ ДИАЛЕКТ.</div>
-    <div class="trans reveal">Один язык: 118 компонентов, светлая и тёмная тема, токены до кода.</div>
-    <div class="meta">глава 4 · <b>Разработка дизайн-системы</b> · 5+ команд используют ежедневно · <span class="go">читать главу →</span></div>
+    <div class="trans reveal reveal--late">Проблема была не в настройке.<br>Карта пути клиента показала барьеры от сайта до цены — и кросс-продажи выросли на 240%.</div>
+    <div class="chfoot chfoot--orig">гл. 05 · Netwrix · 2022<br>Complex Research · CJM</div>
+    <div class="chfoot chfoot--trans"><a href="#ch-05">Подводные камни при решении проблемы интеграции</a> · 100k → 340k за квартал <span class="go">читать →</span></div>
   </section>
 
   <p class="tn reveal">здесь я когда-то собрала все отделы разом и выложила им всё, что нашла. Меня не услышали. Урок: показывать находки каждому отделу отдельно — и заранее.</p>
+
+  <section class="chapter" id="ch-01">
+    <div class="orig reveal">DESKTOP APP · 100+ ТИПОВ ОШИБОК ПЕРЕВОДА · УСТАНОВКА ТРЕБУЕТСЯ</div>
+    <div class="trans reveal reveal--late">Открывается в браузере.<br>30 проблем найдено, 10+ решено в первой версии.</div>
+    <div class="chfoot chfoot--orig">гл. 01 · Palex-Soft · 2019—2021<br>Design Process · Web</div>
+    <div class="chfoot chfoot--trans"><a href="#ch-01">Verifika: история перехода в облако</a> · 28 экранов <span class="go">читать →</span></div>
+  </section>
+
+  <section class="chapter" id="ch-04">
+    <div class="orig reveal">20+ ПРОДУКТОВ. У КАЖДОГО — СВОЙ ИНТЕРФЕЙСНЫЙ ДИАЛЕКТ.</div>
+    <div class="trans reveal reveal--late">Один язык: 118 компонентов, светлая и тёмная тема, токены до кода.</div>
+    <div class="chfoot chfoot--orig">гл. 04 · Netwrix · 2022—2024<br>Design System · Tokens</div>
+    <div class="chfoot chfoot--trans"><a href="#ch-04">Разработка дизайн-системы</a> · 5+ команд используют ежедневно <span class="go">читать →</span></div>
+  </section>
 
   <!-- ПРЕДИСЛОВИЕ ПЕРЕВОДЧИКА -->
   <section class="preface" style="border-top:1px solid var(--hair); margin-top:36px;">
@@ -251,6 +296,23 @@
 (function(){
   document.body.classList.add('js');
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ляссе: закладка-прогресс чтения (следует за скроллом читателя,
+     это не автономная анимация — оставляем и при reduced-motion) */
+  var ribbon = document.getElementById('ribbon');
+  if(ribbon){
+    var ticking = false;
+    function drawRibbon(){
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      ribbon.style.transform = 'scaleX(' + (max > 0 ? window.scrollY / max : 0) + ')';
+      ticking = false;
+    }
+    window.addEventListener('scroll', function(){
+      if(!ticking){ ticking = true; requestAnimationFrame(drawRibbon); }
+    }, {passive:true});
+    drawRibbon();
+  }
+
   var els = document.querySelectorAll('.reveal');
   if(reduced){ els.forEach(function(el){ el.classList.add('is-in'); }); return; }
   var io = new IntersectionObserver(function(entries){
