@@ -53,23 +53,27 @@
   .hero-claim{font-size:clamp(30px,4.6vw,44px); line-height:1.16; margin:0 0 26px; font-weight:400; text-wrap:balance;}
   .hero-claim em{font-style:italic; color:var(--note);}
 
-  /* хиро-анимация «синхронный перевод»: курсор переводчика читает сегмент
-     оригинала слева (как в CAT-инструменте), справа пословно набирается
-     перевод. Один раз при загрузке; reduced-motion — сразу финал. */
-  .sw{padding:1px 3px; margin:-1px -3px; border-radius:2px;
-    transition:background-color .25s ease, color .25s ease;}
-  .sw.is-reading{background:var(--note); color:var(--paper);}
-  .sw.is-read{color:var(--ink);}
-  .hero-claim .hw{display:inline-block;}
-  body.js .hero-claim .hw{opacity:0; transform:translateY(10px);}
-  body.js .hero-claim .hw.is-set{opacity:1; transform:none;
-    transition:opacity .38s ease, transform .38s ease;}
+  /* хиро-анимация «морф»: заголовок сначала стоит машинным оригиналом
+     (моно, капс, голос системы), затем пословно перетекает в антикву —
+     машинное расфокусируется и растворяется, человеческое собирается
+     в фокус. Один раз при загрузке; reduced-motion — сразу финал. */
+  .mw{position:relative; display:inline-block;}
+  .mw__sys{position:absolute; left:50%; top:55%; transform:translate(-50%,-50%);
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.44em;
+    letter-spacing:.1em; color:var(--sys); white-space:nowrap; opacity:0; pointer-events:none;}
+  .mw__hum{display:inline-block;}
+  body.js .mw:not(.is-morphed) .mw__sys{opacity:1;}
+  body.js .mw .mw__hum{opacity:0; transform:scale(.92); filter:blur(7px);}
+  body.js .mw.is-morphed .mw__hum{opacity:1; transform:none; filter:blur(0);
+    transition:opacity .55s ease, transform .55s ease, filter .55s ease;}
+  body.js .mw.is-morphed .mw__sys{opacity:0; transform:translate(-50%,-50%) scale(1.9); filter:blur(5px);
+    transition:opacity .4s ease, transform .4s ease, filter .4s ease;}
   body.js .byline{opacity:0;}
   body.js .byline.is-set{opacity:1; transition:opacity .6s ease;}
   @media (prefers-reduced-motion:reduce){
-    body.js .hero-claim .hw{opacity:1 !important; transform:none !important; transition:none !important;}
+    body.js .mw .mw__hum{opacity:1 !important; transform:none !important; filter:none !important; transition:none !important;}
+    body.js .mw__sys{opacity:0 !important;}
     body.js .byline{opacity:1 !important; transition:none !important;}
-    .sw{transition:none;}
   }
   .byline{font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:11px;
     letter-spacing:2px; text-transform:uppercase; color:var(--dim); line-height:2;}
@@ -194,13 +198,12 @@
         DOMAINS ....... LOCALIZATION → CYBERSEC<br>
         EXPERIENCE .... 7+ YRS<br>
         INPUT ......... COMPLEX SYSTEMS<br>
-        OUTPUT ........ HUMAN CLARITY<br>
-        MESSAGE ....... <span id="hero-seg"><span class="sw">ПЕРЕВОЖУ</span> <span class="sw">С&nbsp;ЯЗЫКА</span> <span class="sw">СИСТЕМ</span> <span class="sw">НА&nbsp;ЯЗЫК</span> <span class="sw">ЛЮДЕЙ</span></span>
+        OUTPUT ........ HUMAN CLARITY
       </div>
     </div>
     <div>
       <div class="page-label">перевод · язык людей</div>
-      <h1 class="hero-claim" id="hero-claim"><span class="hw">Перевожу</span> <span class="hw">с&nbsp;языка</span> <span class="hw">систем</span> <span class="hw">на&nbsp;язык</span> <span class="hw"><em>людей</em></span></h1>
+      <h1 class="hero-claim" id="hero-claim"><span class="mw"><span class="mw__sys" aria-hidden="true">ПЕРЕВОЖУ</span><span class="mw__hum">Перевожу</span></span> <span class="mw"><span class="mw__sys" aria-hidden="true">С&nbsp;ЯЗЫКА</span><span class="mw__hum">с&nbsp;языка</span></span> <span class="mw"><span class="mw__sys" aria-hidden="true">СИСТЕМ</span><span class="mw__hum">систем</span></span> <span class="mw"><span class="mw__sys" aria-hidden="true">НА&nbsp;ЯЗЫК</span><span class="mw__hum">на&nbsp;язык</span></span> <span class="mw"><span class="mw__sys" aria-hidden="true">ЛЮДЕЙ</span><span class="mw__hum"><em>людей</em></span></span></h1>
       <div class="byline" id="hero-byline"><b>Катерина Гилёва</b><br>старший дизайнер цифровых продуктов</div>
     </div>
   </section>
@@ -333,27 +336,23 @@
     drawRibbon();
   }
 
-  /* хиро: «синхронный перевод» — курсор читает оригинал, справа набирается перевод */
+  /* хиро: «морф» — машинный оригинал пословно перетекает в антикву */
   (function(){
-    var seg = document.querySelectorAll('#hero-seg .sw');
-    var words = document.querySelectorAll('#hero-claim .hw');
+    var words = document.querySelectorAll('#hero-claim .mw');
     var byline = document.getElementById('hero-byline');
-    if(!seg.length || !words.length || seg.length !== words.length) return;
-    if(reduced){
-      words.forEach(function(w){ w.classList.add('is-set'); });
-      if(byline) byline.classList.add('is-set');
-      return;
-    }
-    var STEP = 280, i = 0;
-    function tick(){
-      if(i > 0){ seg[i-1].classList.remove('is-reading'); seg[i-1].classList.add('is-read'); }
-      if(i >= seg.length){ if(byline) byline.classList.add('is-set'); return; }
-      seg[i].classList.add('is-reading');
-      words[i].classList.add('is-set');
+    if(!words.length) return;
+    if(reduced){ if(byline) byline.classList.add('is-set'); return; }
+    var i = 0;
+    function morphNext(){
+      if(i >= words.length){
+        setTimeout(function(){ if(byline) byline.classList.add('is-set'); }, 250);
+        return;
+      }
+      words[i].classList.add('is-morphed');
       i++;
-      setTimeout(tick, STEP);
+      setTimeout(morphNext, 150);
     }
-    setTimeout(tick, 500); /* короткая пауза: читатель успевает увидеть разворот */
+    setTimeout(morphNext, 900); /* пауза: читатель успевает увидеть машинную фразу */
   })();
 
   var els = document.querySelectorAll('.reveal');
