@@ -79,12 +79,54 @@
     letter-spacing:2px; text-transform:uppercase; color:var(--dim); line-height:2;}
   .byline b{color:var(--ink); font-weight:600;}
 
-  /* оглавление */
-  .toc{border-top:1px solid var(--hair); padding:34px 2px 8px;}
-  a.toc-row{color:inherit; text-decoration:none;}
-  a.toc-row:hover .pg{color:var(--note);}
-  a.toc-row:hover .dots{border-bottom:1px solid var(--note); transform:translateY(-4px);}
-  .toc-part{margin-bottom:30px;}
+  /* ——— ОГЛАВЛЕНИЕ = ЛЕНТА ОПЫТА ———
+     Три места работы = три части издания на общей оси лет. Выбор части
+     раскрывает её главы разворотами «оригинал → перевод». */
+  .band{border-top:1px solid var(--hair); padding:34px 2px 8px;}
+  .band__head{text-align:center; margin-bottom:26px;}
+  .band__title{font-size:13px; letter-spacing:3px; text-transform:uppercase;
+    font-weight:600; margin:0 0 8px; font-family:ui-monospace,Menlo,monospace;}
+  .band__hint{font-size:13px; font-style:italic; color:var(--dim); margin:0;}
+  .axis{position:relative; height:14px; font-family:ui-monospace,Menlo,monospace;
+    font-size:10px; color:var(--dim); letter-spacing:.5px;}
+  .axis-rule{position:relative; height:1px; background:var(--hair); margin-bottom:10px;}
+  .axis-rule div{position:absolute; top:0; width:1px; height:4px; background:var(--hair);}
+  /* плашки стоят точно под своими годами — это таймлайн, а не равные колонки */
+  .parts{position:relative; height:92px; margin-bottom:14px;}
+  .part{position:absolute; top:0; bottom:0; text-align:left; cursor:pointer; padding:10px 12px;
+    background:none; border:1px solid var(--hair); color:var(--ink); font-family:inherit;
+    overflow:hidden; transition:border-color .2s ease, background-color .2s ease;}
+  .part:hover{border-color:var(--note);}
+  .part:focus-visible{outline:2px solid var(--note); outline-offset:2px;}
+  .part__roman{font-family:ui-monospace,Menlo,monospace; font-size:9.5px; letter-spacing:2px;
+    text-transform:uppercase; color:var(--dim); display:block; margin-bottom:5px;}
+  .part__name{font-size:15px; line-height:1.25; display:block;}
+  .part__meta{font-family:ui-monospace,Menlo,monospace; font-size:10px; color:var(--dim);
+    letter-spacing:.5px; display:block; margin-top:5px;}
+  .part.is-open{border-color:var(--note); background:rgba(168,60,40,.05);}
+  .part.is-open .part__roman{color:var(--note);}
+  /* метки глав на оси — типографские ромбы вместо инженерных треугольников */
+  .marks-label{font-family:ui-monospace,Menlo,monospace; font-size:9.5px; letter-spacing:2px;
+    text-transform:uppercase; color:var(--dim); margin-bottom:3px;}
+  .marks-wrap{position:relative; height:22px; margin-bottom:6px;}
+  .marks-base{position:absolute; top:10px; left:0; right:0; height:1px; background:var(--hair);}
+  .marks{position:absolute; inset:0;}
+  .mark{position:absolute; top:4px; transform:translateX(-50%) rotate(45deg);
+    width:6px; height:6px; background:var(--note); border:none; padding:0; cursor:pointer;
+    transition:transform .2s ease, opacity .2s ease;}
+  .mark:hover,.mark:focus-visible{transform:translateX(-50%) rotate(45deg) scale(1.5); outline:none;}
+  .mark--wip{background:none; border:1px solid var(--dim); opacity:.7;}
+  .band__epigraph{font-style:italic; color:var(--dim); font-size:13.5px;
+    max-width:52ch; margin:14px auto 0; text-align:center;}
+  body.lang-sys .band__epigraph,
+  body.lang-sys .band__hint{opacity:0;}
+  .band__epigraph,.band__hint{transition:opacity .3s ease;}
+  @media (max-width:680px){
+    /* в колонку ось теряет смысл — плашки становятся обычным списком частей */
+    .parts{position:static; height:auto; display:flex; flex-direction:column; gap:6px;}
+    .part{position:static !important; left:auto !important; width:auto !important; padding:11px 13px;}
+    .axis,.axis-rule,.marks-wrap,.marks-label{display:none;}
+  }
 
   /* как читать эту книгу — пояснение приёма для читателя вне темы перевода */
   .howto{border-top:1px solid var(--hair); padding:30px 2px;}
@@ -93,14 +135,6 @@
   .howto p{max-width:54ch; margin:0 auto; text-align:center; font-size:14px;
     font-style:italic; color:var(--sys); line-height:1.7;}
   .howto em{color:var(--note);}
-  .toc-part h3{font-size:13px; letter-spacing:2px; text-transform:uppercase; margin:0 0 4px; font-weight:600;
-    font-family:ui-monospace,"SF Mono",Menlo,monospace;}
-  .toc-part .years{color:var(--dim); font-size:11px; font-family:ui-monospace,Menlo,monospace; letter-spacing:1px;}
-  .epigraph{font-style:italic; color:var(--dim); font-size:13.5px; margin:10px 0 14px; max-width:44ch;}
-  .toc-row{display:flex; align-items:baseline; gap:10px; padding:5px 0; font-size:14px;}
-  .toc-row .dots{flex:1; border-bottom:1px dotted var(--hair); transform:translateY(-4px);}
-  .toc-row .pg{font-family:ui-monospace,Menlo,monospace; font-size:11px; color:var(--dim);}
-  .toc-row .wip{font-family:ui-monospace,Menlo,monospace; font-size:10px; color:var(--note); letter-spacing:1px;}
 
   /* главы: пары оригинал → перевод.
      Корешок НЕ прерывается: у каждой полосы свой подвал-сноска в своей
@@ -128,6 +162,11 @@
   .chfoot--orig{grid-area:2/1;}
   .chfoot--trans{grid-area:2/2;}
   .chfoot--trans a{color:var(--ink); text-decoration:none; font-weight:600;}
+  /* глава, чей перевод ещё готовится: оригинал есть, перевода нет */
+  .chapter--wip .orig{opacity:.75;}
+  .chapter--wip .chfoot--trans a{font-weight:400; color:var(--dim);}
+  .trans .wip{font-family:ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:1.5px;
+    text-transform:uppercase; color:var(--note); opacity:.85;}
   .chfoot--trans .go{color:var(--note); white-space:nowrap;}
   .chapter:hover .chfoot--trans .go{text-decoration:underline; text-underline-offset:3px;}
   body.js .reveal{opacity:0; transform:translateY(6px);}
@@ -181,11 +220,10 @@
   body.lang-sys .trans::before{content:"перевод — не выполнен"; color:var(--note);}
   body.lang-sys .page-label--trans::after{content:" — не выполнен"; color:var(--note);}
   /* человеческий слой уходит вместе с переводчиком */
-  body.lang-sys .epigraph,
   body.lang-sys .tn,
   body.lang-sys .preface .sig,
   body.lang-sys .pm__mark{opacity:0; pointer-events:none;}
-  .epigraph,.tn,.preface .sig{transition:opacity .3s ease;}
+  .tn,.preface .sig{transition:opacity .3s ease;}
   /* морф хиро переигрывается назад: машинный слой возвращается поверх.
      !important — иначе правило .is-morphed из блока морфа перебивает по специфичности */
   body.lang-sys .mw .mw__hum{opacity:0 !important; filter:blur(6px) !important;}
@@ -296,37 +334,6 @@
     </div>
   </section>
 
-  <!-- ОГЛАВЛЕНИЕ -->
-  <section class="toc">
-    <h2 class="xl" data-sys="INDEX / 12 ENTRIES" style="font-size:13px; letter-spacing:3px; text-transform:uppercase; text-align:center; font-weight:600; margin:0 0 30px; font-family:ui-monospace,Menlo,monospace;">Оглавление</h2>
-    <div class="toc-part">
-      <h3 class="xl" data-sys="PART_01 :: LOCALIZATION">Часть I · Локализация</h3>
-      <span class="years">Palex-Soft · 2019—2021</span>
-      <p class="epigraph">«Ошибки в переводах могут привести к серьёзным проблемам в производстве — и даже к медицинским ошибкам с необратимыми последствиями.»</p>
-      <a class="toc-row" href="#ch-01"><span>Verifika: история перехода в облако</span><span class="dots"></span><span class="pg">стр. 04</span></a>
-      <div class="toc-row"><span>Оценка качества перевода в Verifika</span><span class="dots"></span><span class="pg">стр. 12</span></div>
-      <div class="toc-row"><span>МИРОН — наш CAT</span><span class="dots"></span><span class="pg">стр. 16</span></div>
-    </div>
-    <div class="toc-part">
-      <h3 class="xl" data-sys="PART_02 :: CYBERSECURITY">Часть II · Кибербезопасность</h3>
-      <span class="years">Netwrix · 2021—2024</span>
-      <p class="epigraph">«Представьте: на первой встрече с клиентом вы показываете ему список уязвимостей в его инфраструктуре.»</p>
-      <a class="toc-row" href="#ch-04"><span>Разработка дизайн-системы</span><span class="dots"></span><span class="pg">стр. 20</span></a>
-      <a class="toc-row" href="#ch-05"><span>Подводные камни при решении проблемы интеграции</span><span class="dots"></span><span class="pg">стр. 28</span></a>
-      <div class="toc-row"><span>1Secure: Лоск для поиска</span><span class="dots"></span><span class="pg">стр. 36</span></div>
-      <a class="toc-row" href="#ch-07"><span>Оценка рисков для продукта по IT безопасности</span><span class="dots"></span><span class="pg">стр. 40</span></a>
-      <a class="toc-row" href="#ch-08"><span>AI и отчёты: Просто спроси систему</span><span class="dots"></span><span class="pg">стр. 52</span></a>
-      <div class="toc-row"><span>Редизайн Netwrix PPE</span><span class="dots"></span><span class="pg">стр. 58</span></div>
-    </div>
-    <div class="toc-part">
-      <h3 class="xl" data-sys="PART_03 :: PRIVILEGED ACCESS">Часть III · Привилегированный доступ</h3>
-      <span class="years">Индид · 2024—наст. время</span>
-      <div class="toc-row"><span>Проектирование дашборда</span><span class="dots"></span><span class="wip">в переводе</span></div>
-      <div class="toc-row"><span>UX-стратегия и встраивание в процессы</span><span class="dots"></span><span class="wip">в переводе</span></div>
-      <div class="toc-row"><span>ИИ-пилоты</span><span class="dots"></span><span class="wip">в переводе</span></div>
-    </div>
-  </section>
-
   <!-- КАК ЧИТАТЬ ЭТУ КНИГУ — пояснение приёма для читателя вне темы перевода -->
   <section class="howto">
     <span class="lbl xl" data-sys="README">Как читать эту книгу</span>
@@ -339,48 +346,25 @@
     </p>
   </section>
 
-  <!-- ГЛАВЫ: ПАРЫ ОРИГИНАЛ → ПЕРЕВОД -->
-  <section class="chapter" id="ch-07">
-    <div class="orig reveal">RISK SCORE: 6.3<br><br>«Оценка 6 — это плохо или нормально? Как рассчитывается общий уровень риска?»</div>
-    <div class="trans reveal reveal--late xl"
-         data-sys="SEVERITY_ENUM {1|2|3}; THRESHOLD_CFG: REQUIRED; NEXT_ACTION: UNDEFINED">Высокий. Средний. Низкий.<br>И понятно, что делать дальше.</div>
-    <div class="chfoot chfoot--orig">гл. 07 · Netwrix 1Secure · 2022—2024<br>New Feature · Information Diagram</div>
-    <div class="chfoot chfoot--trans"><a href="#ch-07">Оценка рисков для продукта по IT безопасности</a> · полный цикл от стратегии до фидбека <span class="go">читать →</span></div>
+  <!-- ОГЛАВЛЕНИЕ = ЛЕНТА ОПЫТА. Части издания = места работы на оси лет. -->
+  <section class="band" id="band">
+    <div class="band__head">
+      <h2 class="band__title xl" data-sys="INDEX / 3 VOLUMES">Оглавление</h2>
+      <p class="band__hint">Три части — три места работы. Выберите часть, чтобы раскрыть её главы.</p>
+    </div>
+    <div class="axis" id="axis"></div>
+    <div class="axis-rule" id="ticks"></div>
+    <div class="parts" id="parts"></div>
+    <div class="marks-label">главы</div>
+    <div class="marks-wrap">
+      <div class="marks-base"></div>
+      <div class="marks" id="marks"></div>
+    </div>
+    <p class="band__epigraph" id="band-epigraph"></p>
   </section>
 
-  <section class="chapter" id="ch-08">
-    <div class="orig reveal">СОТНИ ОТЧЁТОВ.<br>В ОДНОМ ИЗ НИХ — ВАШ ОТВЕТ.<br><br>Помощь в составлении запроса — одна из частых просьб в техподдержку.</div>
-    <div class="trans reveal reveal--late xl"
-         data-sys="QUERY_BUILDER: 14 FIELDS; SYNTAX_ERR_RATE: HIGH; SEE KB-2291">Просто спросите систему — по-человечески.</div>
-    <div class="chfoot chfoot--orig">гл. 08 · Netwrix · 2023<br>AI · Hackathon</div>
-    <div class="chfoot chfoot--trans"><a href="#ch-08">AI и отчёты: Просто спроси систему</a> · 1 место на хакатоне <span class="go">читать →</span></div>
-  </section>
-
-  <section class="chapter" id="ch-05">
-    <div class="orig reveal">ЗАДАЧА: УПРОСТИТЬ НАСТРОЙКУ ИНТЕГРАЦИИ ДВУХ ПРОДУКТОВ.</div>
-    <div class="trans reveal reveal--late xl"
-         data-sys="ATTACH_RATE: 11%; ROOT_CAUSE: NOT_INVESTIGATED; TICKET: CLOSED — NO ACTION">Проблема была не в настройке.<br>Карта пути клиента показала барьеры от сайта до цены — и кросс-продажи выросли на <span class="pm-nb"><span class="pm">240%<svg class="pm__mark pm__mark--under" viewBox="0 0 100 11" preserveAspectRatio="none" aria-hidden="true"><path d="M1 6 C 22 2.5, 48 8.5, 71 4.5 S 93 3.5, 99 6.5"/></svg></span>.</span></div>
-    <div class="chfoot chfoot--orig">гл. 05 · Netwrix · 2022<br>Complex Research · CJM</div>
-    <div class="chfoot chfoot--trans"><a href="#ch-05">Подводные камни при решении проблемы интеграции</a> · 100k → 340k за квартал <span class="go">читать →</span></div>
-  </section>
-
-  <p class="tn reveal">здесь я когда-то собрала все отделы разом и выложила им всё, что нашла. Меня не услышали. Урок: показывать находки каждому отделу отдельно — и заранее.</p>
-
-  <section class="chapter" id="ch-01">
-    <div class="orig reveal">DESKTOP APP · 100+ ТИПОВ ОШИБОК ПЕРЕВОДА · УСТАНОВКА ТРЕБУЕТСЯ</div>
-    <div class="trans reveal reveal--late xl"
-         data-sys="MIGRATION: PENDING; UX_DEBT: 30 OPEN ITEMS; SCHEDULE: TBD">Открывается в браузере.<br><span class="pm-nb"><span class="pm">30 проблем найдено<svg class="pm__mark pm__mark--under" viewBox="0 0 100 11" preserveAspectRatio="none" aria-hidden="true"><path d="M1 5.5 C 26 2, 55 9, 78 4 S 95 4, 99 6"/></svg></span>,</span> 10+ решено в первой версии.</div>
-    <div class="chfoot chfoot--orig">гл. 01 · Palex-Soft · 2019—2021<br>Design Process · Web</div>
-    <div class="chfoot chfoot--trans"><a href="#ch-01">Verifika: история перехода в облако</a> · 28 экранов <span class="go">читать →</span></div>
-  </section>
-
-  <section class="chapter" id="ch-04">
-    <div class="orig reveal">20+ ПРОДУКТОВ. У КАЖДОГО — СВОЙ ИНТЕРФЕЙСНЫЙ ДИАЛЕКТ.</div>
-    <div class="trans reveal reveal--late xl"
-         data-sys="COMPONENTS: FRAGMENTED ACROSS 20+ PRODUCTS; TOKENS: NONE; THEME: HARDCODED">Один язык: <span class="pm-nb"><span class="pm">118 компонентов<svg class="pm__mark pm__mark--circle" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path d="M50 3 C 22 2, 3 10, 4 21 C 5 33, 28 38, 52 37 C 78 36, 97 31, 96 19 C 95 8, 76 3, 46 4"/></svg></span>,</span> светлая и тёмная тема, токены до кода.</div>
-    <div class="chfoot chfoot--orig">гл. 04 · Netwrix · 2022—2024<br>Design System · Tokens</div>
-    <div class="chfoot chfoot--trans"><a href="#ch-04">Разработка дизайн-системы</a> · 5+ команд используют ежедневно <span class="go">читать →</span></div>
-  </section>
+  <!-- ГЛАВЫ ВЫБРАННОЙ ЧАСТИ: ПАРЫ ОРИГИНАЛ → ПЕРЕВОД -->
+  <div id="chapters"></div>
 
   <!-- ПРЕДИСЛОВИЕ ПЕРЕВОДЧИКА -->
   <section class="preface" style="border-top:1px solid var(--hair); margin-top:36px;">
@@ -417,8 +401,7 @@
   document.body.classList.add('js');
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ляссе: закладка-прогресс чтения (следует за скроллом читателя,
-     это не автономная анимация — оставляем и при reduced-motion) */
+  /* ——— ляссе: закладка-прогресс чтения ——— */
   var ribbon = document.getElementById('ribbon');
   if(ribbon){
     var ticking = false;
@@ -433,7 +416,7 @@
     drawRibbon();
   }
 
-  /* хиро: «морф» — машинный оригинал пословно перетекает в антикву */
+  /* ——— хиро: морф машинного оригинала в антикву ——— */
   (function(){
     var words = document.querySelectorAll('#hero-claim .mw');
     var byline = document.getElementById('hero-byline');
@@ -449,10 +432,10 @@
       i++;
       setTimeout(morphNext, 150);
     }
-    setTimeout(morphNext, 900); /* пауза: читатель успевает увидеть машинную фразу */
+    setTimeout(morphNext, 900);
   })();
 
-  /* ——— карандаш переводчика: пометки рисуются штрихом при въезде в вид ——— */
+  /* ——— карандаш переводчика ——— */
   function measure(el){
     var path = el.querySelector('path');
     if(!path) return false;
@@ -475,23 +458,241 @@
       if(pencilIO){ pencilIO.observe(m); } else { m.classList.add('is-drawn'); }
     });
   }
-  initPencil();
 
-  /* ——— ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА ИЗДАНИЯ ———
-     Волна перевода идёт сверху вниз: каждая строка на миг расплывается
-     и возвращается на другом языке. В режиме «СИСТЕМА» книга показывает
-     сырой оригинал — то, что осталось бы без переводчика. */
+  /* ——— проявление разворотов при въезде в вид ——— */
+  var revealIO = (!reduced && 'IntersectionObserver' in window)
+    ? new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(!e.isIntersecting) return;
+          e.target.classList.add('is-in');
+          revealIO.unobserve(e.target);
+        });
+      }, {threshold:0.15, rootMargin:'0px 0px -5% 0px'})
+    : null;
+  function initReveal(scope){
+    var els = (scope || document).querySelectorAll('.reveal');
+    Array.prototype.forEach.call(els, function(el){
+      if(revealIO){ revealIO.observe(el); } else { el.classList.add('is-in'); }
+    });
+  }
+
+  /* ============================================================
+     ОГЛАВЛЕНИЕ = ЛЕНТА ОПЫТА
+     Части издания = места работы на общей оси лет. Выбор части
+     раскрывает её главы разворотами «оригинал → перевод».
+     Номера глав и даты — как на основном сайте (script.js).
+     ============================================================ */
+  var Y0 = 2019, Y1 = 2026, SPAN = Y1 - Y0;
+  function pct(y){ return ((y - Y0) / SPAN) * 100; }
+
+  var parts = [
+    /* from/to — реальные сроки из bio.md; плашка занимает ровно свой отрезок оси */
+    { id:'palex', roman:'Часть I', name:'Локализация', co:'Palex-Soft',
+      years:'2019—2021', from:2019.0, to:2021.95, sys:'PART_01 :: LOCALIZATION',
+      epigraph:'«Ошибки в переводах могут привести к серьёзным проблемам в производстве — и даже к медицинским ошибкам с необратимыми последствиями.»' },
+    { id:'netwrix', roman:'Часть II', name:'Кибербезопасность', co:'Netwrix',
+      years:'2021—2024', from:2021.95, to:2024.3, sys:'PART_02 :: CYBERSECURITY',
+      epigraph:'«Представьте: на первой встрече с клиентом вы показываете ему список уязвимостей в его инфраструктуре.»' },
+    { id:'indeed', roman:'Часть III', name:'Привилегированный доступ', co:'Индид',
+      years:'с 2024', from:2024.5, to:2026.0, sys:'PART_03 :: PRIVILEGED ACCESS',
+      epigraph:'Часть в работе: оригиналы собраны, перевод готовится.' }
+  ];
+
+  var UNDER = '<svg class="pm__mark pm__mark--under" viewBox="0 0 100 11" preserveAspectRatio="none" aria-hidden="true"><path d="M1 6 C 22 2.5, 48 8.5, 71 4.5 S 93 3.5, 99 6.5"/></svg>';
+  var CIRCLE = '<svg class="pm__mark pm__mark--circle" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path d="M50 3 C 22 2, 3 10, 4 21 C 5 33, 28 38, 52 37 C 78 36, 97 31, 96 19 C 95 8, 76 3, 46 4"/></svg>';
+  function mark(text, kind, tail){
+    return '<span class="pm-nb"><span class="pm">' + text +
+      (kind === 'circle' ? CIRCLE : UNDER) + '</span>' + (tail || '') + '</span>';
+  }
+
+  var chapters = {
+    palex: [
+      { n:'01', x:2019.0, title:'Verifika: история перехода в облако',
+        tags:'Design Process · Web', when:'2019—2021',
+        orig:'DESKTOP APP · 100+ ТИПОВ ОШИБОК ПЕРЕВОДА · УСТАНОВКА ТРЕБУЕТСЯ',
+        trans:'Открывается в браузере.<br>' + mark('30 проблем найдено', 'under', ',') + ' 10+ решено в первой версии.',
+        sys:'MIGRATION: PENDING; UX_DEBT: 30 OPEN ITEMS; SCHEDULE: TBD',
+        tail:'28 экранов' },
+      { n:'02', x:2020.3, title:'Оценка качества перевода в Verifika',
+        tags:'TQE · Research', when:'2020',
+        orig:'ОЦЕНКА КАЧЕСТВА — ВНЕ ПРОДУКТА: ТАБЛИЦЫ, ПОЧТА, РУЧНОЙ ПОДСЧЁТ.',
+        trans:'Оценка встроена в проверку. Ведущий лингвист и менеджер смотрят в один экран.',
+        sys:'TQE: EXTERNAL PROCESS; FORMAT: SPREADSHEET; OWNER: UNDEFINED',
+        tail:'7 международных компаний в исследовании' },
+      { n:'03', x:2021.3, title:'МИРОН — наш CAT',
+        tags:'CAT · MVP', when:'2021',
+        orig:'ИМПОРТОЗАМЕЩЕНИЕ ПЕРЕВОДЧЕСКОГО ПО. ОТЕЧЕСТВЕННОЙ СРЕДЫ НЕТ.',
+        trans:'MVP переводческой среды — к сроку семинара.',
+        sys:'CAT_TOOL: NOT AVAILABLE; ALTERNATIVES: FOREIGN ONLY',
+        tail:'лучший UX на семинаре' }
+    ],
+    netwrix: [
+      { n:'01', x:2022.0, title:'Разработка дизайн-системы',
+        tags:'Design System · Tokens', when:'2022—2024',
+        orig:'20+ ПРОДУКТОВ. У КАЖДОГО — СВОЙ ИНТЕРФЕЙСНЫЙ ДИАЛЕКТ.',
+        trans:'Один язык: ' + mark('118 компонентов', 'circle', ',') + ' светлая и тёмная тема, токены до кода.',
+        sys:'COMPONENTS: FRAGMENTED ACROSS 20+ PRODUCTS; TOKENS: NONE; THEME: HARDCODED',
+        tail:'5+ команд используют ежедневно' },
+      { n:'02', x:2022.25, title:'Подводные камни при решении проблемы интеграции',
+        tags:'Complex Research · CJM', when:'2022',
+        orig:'ЗАДАЧА: УПРОСТИТЬ НАСТРОЙКУ ИНТЕГРАЦИИ ДВУХ ПРОДУКТОВ.',
+        trans:'Проблема была не в настройке.<br>Карта пути клиента показала барьеры от сайта до цены — и кросс-продажи выросли на ' + mark('240%', 'under', '.'),
+        sys:'ATTACH_RATE: 11%; ROOT_CAUSE: NOT_INVESTIGATED; TICKET: CLOSED — NO ACTION',
+        tail:'100k → 340k за квартал',
+        tn:'здесь я когда-то собрала все отделы разом и выложила им всё, что нашла. Меня не услышали. Урок: показывать находки каждому отделу отдельно — и заранее.' },
+      { n:'03', x:2022.45, title:'1Secure: Лоск для поиска',
+        tags:'UI · Design Spec', when:'2022',
+        orig:'INVESTIGATION СОБРАН БЕЗ ДИЗАЙНЕРА: СВЯЗКА ФИЛЬТРОВ НЕЛОГИЧНА, ОКНО ДЕТАЛЕЙ ЗАКРЫВАЕТ ТАБЛИЦУ.',
+        trans:'Порядок наведён — и команда воспроизвела макет за одну итерацию.',
+        sys:'UI: UNREVIEWED; FILTER_LOGIC: INCONSISTENT; DETAIL_PANE: OVERLAPS TABLE',
+        tail:'подробная спецификация для разработки' },
+      { n:'04', x:2022.85, title:'Оценка рисков для продукта по IT безопасности',
+        tags:'New Feature · Information Diagram', when:'2022—2024',
+        orig:'RISK SCORE: 6.3<br><br>«Оценка 6 — это плохо или нормально? Как рассчитывается общий уровень риска?»',
+        trans:'Высокий. Средний. Низкий.<br>И понятно, что делать дальше.',
+        sys:'SEVERITY_ENUM {1|2|3}; THRESHOLD_CFG: REQUIRED; NEXT_ACTION: UNDEFINED',
+        tail:'полный цикл от стратегии до фидбека' },
+      { n:'06', x:2023.4, title:'Редизайн Netwrix PPE',
+        tags:'Redesign · Windows', when:'2023',
+        orig:'WINDOWS-ПРИЛОЖЕНИЕ ДЛЯ ПАРОЛЬНЫХ ПОЛИТИК. ИНТЕРФЕЙС НЕ ПЕРЕСМАТРИВАЛСЯ.',
+        trans:'Новый интерфейс, спецификация — и команда, обученная работать с макетами.',
+        sys:'LEGACY_UI: WINDOWS; LAST_REVIEW: NONE; DESIGN_HANDOFF: ABSENT',
+        tail:'тестирование и обучение команды' },
+      { n:'05', x:2023.95, title:'AI и отчёты: Просто спроси систему',
+        tags:'AI · Hackathon', when:'2023',
+        orig:'СОТНИ ОТЧЁТОВ.<br>В ОДНОМ ИЗ НИХ — ВАШ ОТВЕТ.<br><br>Помощь в составлении запроса — одна из частых просьб в техподдержку.',
+        trans:'Просто спросите систему — по-человечески.',
+        sys:'QUERY_BUILDER: 14 FIELDS; SYNTAX_ERR_RATE: HIGH; SEE KB-2291',
+        tail:'1 место на хакатоне' }
+    ],
+    indeed: [
+      { n:'·', x:2024.7, title:'Проектирование дашборда', tags:'PAM', when:'2024',
+        orig:'ДАШБОРД · ПРИВИЛЕГИРОВАННЫЙ ДОСТУП', wip:true },
+      { n:'·', x:2025.3, title:'UX-стратегия и встраивание в процессы', tags:'PAM', when:'2025',
+        orig:'UX-СТРАТЕГИЯ · ВСТРАИВАНИЕ В ПРОЦЕССЫ', wip:true },
+      { n:'·', x:2025.8, title:'ИИ-пилоты', tags:'PAM', when:'2025',
+        orig:'ИИ-ПИЛОТЫ', wip:true }
+    ]
+  };
+
+  /* — годовая шкала — */
+  var axis = document.getElementById('axis'), ticks = document.getElementById('ticks');
+  if(axis && ticks){
+    for(var y = Y0; y <= Y1; y++){
+      var p = pct(y);
+      var lbl = document.createElement('div');
+      lbl.textContent = y;
+      lbl.style.cssText = 'position:absolute; left:' + p + '%; transform:translateX(' +
+        (y === Y0 ? '0' : y === Y1 ? '-100%' : '-50%') + ');';
+      axis.appendChild(lbl);
+      var tk = document.createElement('div');
+      tk.style.left = p + '%';
+      ticks.appendChild(tk);
+    }
+  }
+
+  var partsEl = document.getElementById('parts');
+  var marksEl = document.getElementById('marks');
+  var epigraphEl = document.getElementById('band-epigraph');
+  var chaptersEl = document.getElementById('chapters');
+  var sysMode = false;
+
+  function chapterHTML(c, part){
+    var origSys = c.orig;
+    var transHTML = c.wip
+      ? '<span class="wip">переводится</span>'
+      : c.trans;
+    var transSys = c.wip ? 'TRANSLATION: PENDING' : c.sys;
+    return '' +
+      '<section class="chapter' + (c.wip ? ' chapter--wip' : '') + '">' +
+        '<div class="orig reveal">' + origSys + '</div>' +
+        '<div class="trans reveal reveal--late xl" data-sys="' + transSys + '">' + transHTML + '</div>' +
+        '<div class="chfoot chfoot--orig">' + (c.wip ? '' : 'гл. ' + c.n + ' · ') +
+          part.co + ' · ' + c.when + '<br>' + c.tags + '</div>' +
+        '<div class="chfoot chfoot--trans"><a href="#">' + c.title + '</a>' +
+          (c.tail ? ' · ' + c.tail : '') +
+          (c.wip ? '' : ' <span class="go">читать →</span>') + '</div>' +
+      '</section>' +
+      (c.tn ? '<p class="tn reveal">' + c.tn + '</p>' : '');
+  }
+
+  function renderChapters(part){
+    var list = chapters[part.id].slice().sort(function(a,b){ return a.x - b.x; });
+    chaptersEl.innerHTML = list.map(function(c){ return chapterHTML(c, part); }).join('');
+    /* новые .xl помнят свой человеческий оригинал; в режиме СИСТЕМА
+       сразу показываем машинный — без волны, она уже прошла */
+    Array.prototype.forEach.call(chaptersEl.querySelectorAll('.xl'), function(n){
+      n.setAttribute('data-hum', n.innerHTML);
+      if(sysMode) n.innerHTML = n.getAttribute('data-sys') || n.innerHTML;
+    });
+    initReveal(chaptersEl);
+    if(!sysMode) initPencil(chaptersEl);
+  }
+
+  function renderMarks(part){
+    var list = chapters[part.id];
+    marksEl.innerHTML = '';
+    list.forEach(function(c, i){
+      var b = document.createElement('button');
+      b.className = 'mark' + (c.wip ? ' mark--wip' : '');
+      b.style.left = pct(c.x) + '%';
+      b.setAttribute('aria-label', 'глава ' + c.n + ' — ' + c.title);
+      b.title = c.title;
+      if(!reduced){
+        b.style.opacity = '0';
+        setTimeout(function(){
+          b.style.transition = 'opacity .3s ease';
+          b.style.opacity = '';
+        }, 90 * i);
+      }
+      b.addEventListener('click', function(){
+        var target = chaptersEl.querySelectorAll('.chapter')[
+          chapters[part.id].slice().sort(function(a,z){ return a.x - z.x; }).indexOf(c)
+        ];
+        if(target) target.scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'center'});
+      });
+      marksEl.appendChild(b);
+    });
+  }
+
+  function open(part){
+    Array.prototype.forEach.call(partsEl.children, function(el){
+      var on = el.getAttribute('data-part') === part.id;
+      el.classList.toggle('is-open', on);
+      el.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    if(epigraphEl) epigraphEl.textContent = part.epigraph;
+    renderMarks(part);
+    renderChapters(part);
+  }
+
+  if(partsEl){
+    parts.forEach(function(part){
+      var b = document.createElement('button');
+      b.className = 'part';
+      b.setAttribute('data-part', part.id);
+      b.setAttribute('role', 'tab');
+      b.style.left = pct(part.from) + '%';
+      b.style.width = (pct(part.to) - pct(part.from)) + '%';
+      b.innerHTML = '<span class="part__roman xl" data-sys="' + part.sys + '">' + part.roman + '</span>' +
+        '<span class="part__name">' + part.name + '</span>' +
+        '<span class="part__meta">' + part.co + ' · ' + part.years + '</span>';
+      b.addEventListener('click', function(){ open(part); });
+      partsEl.appendChild(b);
+    });
+    partsEl.setAttribute('role', 'tablist');
+    open(parts[2]); /* дефолт — текущее место работы (см. CONTEXT.md) */
+  }
+
+  initPencil();
+  initReveal();
+
+  /* ——— ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА ИЗДАНИЯ ——— */
   (function(){
     var btn = document.getElementById('lang-toggle');
     if(!btn) return;
     var opts = btn.querySelectorAll('.lang-toggle__opt');
-    var nodes = Array.prototype.slice.call(document.querySelectorAll('.xl'));
-    if(!nodes.length) return;
-    nodes.forEach(function(n){ n.setAttribute('data-hum', n.innerHTML); });
-    nodes.sort(function(a,b){
-      return a.getBoundingClientRect().top - b.getBoundingClientRect().top;
-    });
-    var STAGGER = 26, sysMode = false, busy = false;
+    var STAGGER = 26, busy = false;
 
     function swap(node, toSys){
       node.innerHTML = toSys
@@ -499,7 +700,6 @@
         : node.getAttribute('data-hum');
       node.classList.remove('is-flipping');
       if(!toSys){
-        /* восстановленная разметка — пометки рисуем сразу, они уже в поле зрения */
         Array.prototype.forEach.call(node.querySelectorAll('.pm'), function(m){
           if(measure(m)) requestAnimationFrame(function(){ m.classList.add('is-drawn'); });
         });
@@ -515,6 +715,14 @@
       Array.prototype.forEach.call(opts, function(o){
         o.classList.toggle('is-on', (o.getAttribute('data-lang') === 'sys') === sysMode);
       });
+      /* узлы пересобираются каждый раз: главы могли смениться вместе с частью */
+      var nodes = Array.prototype.slice.call(document.querySelectorAll('.xl'));
+      nodes.forEach(function(n){
+        if(!n.hasAttribute('data-hum')) n.setAttribute('data-hum', n.innerHTML);
+      });
+      nodes.sort(function(a,b){
+        return a.getBoundingClientRect().top - b.getBoundingClientRect().top;
+      });
       nodes.forEach(function(n, i){
         if(reduced){ swap(n, sysMode); return; }
         setTimeout(function(){
@@ -525,16 +733,5 @@
       setTimeout(function(){ busy = false; }, reduced ? 50 : nodes.length * STAGGER + 320);
     });
   })();
-
-  var els = document.querySelectorAll('.reveal');
-  if(reduced){ els.forEach(function(el){ el.classList.add('is-in'); }); return; }
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(!e.isIntersecting) return;
-      e.target.classList.add('is-in');
-      io.unobserve(e.target);
-    });
-  }, {threshold:0.15, rootMargin:'0px 0px -5% 0px'});
-  els.forEach(function(el){ io.observe(el); });
 })();
 </script>
