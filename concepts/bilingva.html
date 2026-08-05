@@ -196,6 +196,9 @@
      Пометки на полях: подчёркивания, обводки, стрелки. Рисуются штрихом
      при въезде в вид (stroke-dashoffset), длина пути берётся из SVG. */
   .pm{position:relative; display:inline-block;}
+  /* пометка — атомарный inline-block, поэтому знак препинания после неё
+     держим в одной связке, иначе точка/запятая срывается на новую строку */
+  .pm-nb{white-space:nowrap;}
   .pm__mark{position:absolute; pointer-events:none; overflow:visible;}
   .pm__mark path{fill:none; stroke:var(--note); stroke-width:1.7; stroke-linecap:round;
     stroke-linejoin:round; opacity:.8;}
@@ -356,7 +359,7 @@
   <section class="chapter" id="ch-05">
     <div class="orig reveal">ЗАДАЧА: УПРОСТИТЬ НАСТРОЙКУ ИНТЕГРАЦИИ ДВУХ ПРОДУКТОВ.</div>
     <div class="trans reveal reveal--late xl"
-         data-sys="ATTACH_RATE: 11%; ROOT_CAUSE: NOT_INVESTIGATED; TICKET: CLOSED — NO ACTION">Проблема была не в настройке.<br>Карта пути клиента показала барьеры от сайта до цены — и кросс-продажи выросли на <span class="pm">240%<svg class="pm__mark pm__mark--under" viewBox="0 0 100 11" preserveAspectRatio="none" aria-hidden="true"><path d="M1 6 C 22 2.5, 48 8.5, 71 4.5 S 93 3.5, 99 6.5"/></svg></span>.</div>
+         data-sys="ATTACH_RATE: 11%; ROOT_CAUSE: NOT_INVESTIGATED; TICKET: CLOSED — NO ACTION">Проблема была не в настройке.<br>Карта пути клиента показала барьеры от сайта до цены — и кросс-продажи выросли на <span class="pm-nb"><span class="pm">240%<svg class="pm__mark pm__mark--under" viewBox="0 0 100 11" preserveAspectRatio="none" aria-hidden="true"><path d="M1 6 C 22 2.5, 48 8.5, 71 4.5 S 93 3.5, 99 6.5"/></svg></span>.</span></div>
     <div class="chfoot chfoot--orig">гл. 05 · Netwrix · 2022<br>Complex Research · CJM</div>
     <div class="chfoot chfoot--trans"><a href="#ch-05">Подводные камни при решении проблемы интеграции</a> · 100k → 340k за квартал <span class="go">читать →</span></div>
   </section>
@@ -366,7 +369,7 @@
   <section class="chapter" id="ch-01">
     <div class="orig reveal">DESKTOP APP · 100+ ТИПОВ ОШИБОК ПЕРЕВОДА · УСТАНОВКА ТРЕБУЕТСЯ</div>
     <div class="trans reveal reveal--late xl"
-         data-sys="MIGRATION: PENDING; UX_DEBT: 30 OPEN ITEMS; SCHEDULE: TBD">Открывается в браузере.<br><span class="pm">30 проблем найдено<svg class="pm__mark pm__mark--under" viewBox="0 0 100 11" preserveAspectRatio="none" aria-hidden="true"><path d="M1 5.5 C 26 2, 55 9, 78 4 S 95 4, 99 6"/></svg></span>, 10+ решено в первой версии.</div>
+         data-sys="MIGRATION: PENDING; UX_DEBT: 30 OPEN ITEMS; SCHEDULE: TBD">Открывается в браузере.<br><span class="pm-nb"><span class="pm">30 проблем найдено<svg class="pm__mark pm__mark--under" viewBox="0 0 100 11" preserveAspectRatio="none" aria-hidden="true"><path d="M1 5.5 C 26 2, 55 9, 78 4 S 95 4, 99 6"/></svg></span>,</span> 10+ решено в первой версии.</div>
     <div class="chfoot chfoot--orig">гл. 01 · Palex-Soft · 2019—2021<br>Design Process · Web</div>
     <div class="chfoot chfoot--trans"><a href="#ch-01">Verifika: история перехода в облако</a> · 28 экранов <span class="go">читать →</span></div>
   </section>
@@ -374,7 +377,7 @@
   <section class="chapter" id="ch-04">
     <div class="orig reveal">20+ ПРОДУКТОВ. У КАЖДОГО — СВОЙ ИНТЕРФЕЙСНЫЙ ДИАЛЕКТ.</div>
     <div class="trans reveal reveal--late xl"
-         data-sys="COMPONENTS: FRAGMENTED ACROSS 20+ PRODUCTS; TOKENS: NONE; THEME: HARDCODED">Один язык: <span class="pm">118 компонентов<svg class="pm__mark pm__mark--circle" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path d="M50 3 C 22 2, 3 10, 4 21 C 5 33, 28 38, 52 37 C 78 36, 97 31, 96 19 C 95 8, 76 3, 46 4"/></svg></span>, светлая и тёмная тема, токены до кода.</div>
+         data-sys="COMPONENTS: FRAGMENTED ACROSS 20+ PRODUCTS; TOKENS: NONE; THEME: HARDCODED">Один язык: <span class="pm-nb"><span class="pm">118 компонентов<svg class="pm__mark pm__mark--circle" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path d="M50 3 C 22 2, 3 10, 4 21 C 5 33, 28 38, 52 37 C 78 36, 97 31, 96 19 C 95 8, 76 3, 46 4"/></svg></span>,</span> светлая и тёмная тема, токены до кода.</div>
     <div class="chfoot chfoot--orig">гл. 04 · Netwrix · 2022—2024<br>Design System · Tokens</div>
     <div class="chfoot chfoot--trans"><a href="#ch-04">Разработка дизайн-системы</a> · 5+ команд используют ежедневно <span class="go">читать →</span></div>
   </section>
