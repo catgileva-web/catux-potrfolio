@@ -41,15 +41,26 @@
 
   /* разворот: оригинал | корешок | перевод */
   .spread{display:grid; grid-template-columns:1fr 1fr; column-gap:72px; position:relative; padding:40px 2px;}
+  /* без min-width:0 grid-элемент не сжимается ниже ширины <pre> и распирает страницу */
+  .spread > *{min-width:0;}
   .spread::before{content:""; position:absolute; top:0; bottom:0; left:50%; width:1px;
     background:linear-gradient(to right, transparent, var(--hair)); box-shadow:14px 0 22px -14px rgba(40,37,30,.18);}
   .page-label{font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:9px;
     letter-spacing:2px; text-transform:uppercase; color:var(--dim); margin-bottom:20px;}
   .page--sys{color:var(--sys); font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:13px;}
 
-  /* титульный разворот */
-  .spec{border:1px solid var(--hair); padding:20px 22px; font-size:12.5px; line-height:2.05;}
-  .spec b{color:var(--ink); font-weight:600;}
+  /* титульный разворот: оригинал подан как JSON — на этом языке системы
+     разговаривают друг с другом. Подсветка синтаксиса своими токенами,
+     новых цветов не вводит; значение output — акцентом, это то, что
+     переводчик отдаёт на выходе. */
+  .spec{border:1px solid var(--hair); padding:18px 20px; font-size:12.5px;
+    line-height:1.95; margin:0; overflow-x:auto;
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;}
+  .j-pun{color:var(--hair);}
+  .j-key{color:var(--dim);}
+  .j-str{color:var(--sys);}
+  .j-num{color:var(--sys); font-variant-numeric:tabular-nums;}
+  .j-out{color:var(--note);}
   .hero-claim{font-size:clamp(30px,4.6vw,44px); line-height:1.16; margin:0 0 26px; font-weight:400; text-wrap:balance;}
   .hero-claim em{font-style:italic; color:var(--note);}
 
@@ -317,14 +328,14 @@
   <section class="spread">
     <div class="page--sys">
       <div class="page-label">оригинал · язык системы</div>
-      <div class="spec">
-        NAME .......... <b>GILEVA, EKATERINA</b><br>
-        ROLE .......... SENIOR PRODUCT DESIGNER<br>
-        DOMAINS ....... LOCALIZATION → CYBERSEC<br>
-        EXPERIENCE .... 7+ YRS<br>
-        INPUT ......... COMPLEX SYSTEMS<br>
-        OUTPUT ........ HUMAN CLARITY
-      </div>
+      <pre class="spec"><span class="j-pun">{</span>
+  <span class="j-key">"name"</span><span class="j-pun">:</span>    <span class="j-str">"Gileva, Ekaterina"</span><span class="j-pun">,</span>
+  <span class="j-key">"role"</span><span class="j-pun">:</span>    <span class="j-str">"Senior Product Designer"</span><span class="j-pun">,</span>
+  <span class="j-key">"domains"</span><span class="j-pun">:</span> <span class="j-pun">[</span><span class="j-str">"localization"</span><span class="j-pun">,</span> <span class="j-str">"cybersec"</span><span class="j-pun">],</span>
+  <span class="j-key">"years"</span><span class="j-pun">:</span>   <span class="j-num">7</span><span class="j-pun">,</span>
+  <span class="j-key">"input"</span><span class="j-pun">:</span>   <span class="j-str">"complex systems"</span><span class="j-pun">,</span>
+  <span class="j-key">"output"</span><span class="j-pun">:</span>  <span class="j-out">"human clarity"</span>
+<span class="j-pun">}</span></pre>
     </div>
     <div>
       <div class="page-label page-label--trans">перевод · язык людей</div>
